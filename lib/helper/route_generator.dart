@@ -1,3 +1,4 @@
+import 'package:buffer/screens/home_screen.dart';
 import 'package:buffer/screens/intro_screen.dart';
 import 'package:buffer/screens/login_screen.dart';
 import 'package:buffer/screens/sign_up.dart';
@@ -16,6 +17,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const LoginScreen());
       case '/signUpScreen':
         return MaterialPageRoute(builder: (_) => const SignUpScreen());
+      case '/homeScreen':
+        return MaterialPageRoute(builder: (_) => const HomeScreen());
     }
     return _errorRoute();
   }

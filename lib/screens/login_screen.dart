@@ -1,11 +1,18 @@
 import 'package:buffer/screens/home_screen.dart';
+import 'package:email_validator/email_validator.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import '../helper/utils.dart';
 
 import '../constants.dart';
+import '../main.dart';
 import '../widgets/custom_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   _LoginScreenState createState() => _LoginScreenState();
@@ -42,12 +49,18 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     CustomTextField(
+                      validator: (value) => EmailValidator.validate(value!)
+                          ? null
+                          : "Please enter a valid email",
                       textEditingController: _emailController,
                       textInputType: TextInputType.emailAddress,
-                      hintText: 'Enter E-mail',
+                      hintText: 'E-mail',
                       icon: const Icon(Icons.email),
                     ),
                     CustomTextField(
+                      validator: (value) => value != null && value.length < 8
+                          ? 'Enter min. 8 characters'
+                          : null,
                       textEditingController: _passwordController,
                       textInputType: TextInputType.visiblePassword,
                       hintText: 'Password',
@@ -70,8 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           elevation: 0,
                           primary: voiletColor),
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => const HomeScreen()));
+                        signIn();
                       },
                       icon: const Icon(Icons.lock_open),
                       label: const Text('Log In'),
@@ -86,22 +98,43 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: TextStyle(color: Colors.grey),
                 ),
               ),
-              RichText(
-                text: const TextSpan(
-                  text: 'Don\'t have an account ?? ',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                  children: <TextSpan>[
-                    TextSpan(
-                        //
-                        text: 'Sign Up',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: voiletColor)),
-                    // TextSpan(text: ' world!'),
-                  ],
+              InkWell(
+                onTap: () =>
+                    Navigator.pushReplacementNamed(context, '/signUpScreen'),
+                child: RichText(
+                  text: TextSpan(
+                    text: 'Don\'t have an account ?? ',
+                    style: TextStyle(fontSize: 16, color: Colors.white),
+                    children: <TextSpan>[
+                      TextSpan(
+                          text: 'Sign Up',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, color: voiletColor)),
+                      // TextSpan(text: ' world!'),
+                    ],
+                  ),
                 ),
               ),
             ],
           ),
         ));
+  }
+
+  Future signIn() async {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => const Center(child: CircularProgressIndicator()));
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim());
+    } on FirebaseAuthException catch (e) {
+      print(e);
+      Utils.showSnackBar(e.message);
+    }
+
+    navigatorKey.currentState!.popUntil((route) => route.isFirst);
+    // Navigator.pushNamed(context, '/loginScreen');
   }
 }
