@@ -39,10 +39,6 @@ class _HomeCardListState extends State<HomeCardList> {
                     backgroundImage: NetworkImage(
                       data.image,
                     ),
-                    // child: Image.network(
-                    //   data.image,
-                    //   fit: BoxFit.cover,
-                    // ),
                   ),
                   title: Text(data.title),
                   subtitle: Text(data.subTitle),
@@ -102,30 +98,12 @@ class _HomeCardListState extends State<HomeCardList> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 0.0, 8.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                        height: 40.0,
-                        width: 40.0,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          image: DecorationImage(fit: BoxFit.fill, image: NetworkImage("https://pbs.twimg.com/profile_images/916384996092448768/PF1TSFOE_400x400.jpg")),
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10.0,
-                      ),
-                      const Expanded(
-                        child: TextField(
-                          decoration: InputDecoration(
-                            border: InputBorder.none,
-                            hintText: "Add a comment...",
-                          ),
-                        ),
-                      ),
-                    ],
+                  padding: const EdgeInsets.symmetric(horizontal: 14),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Add a comment...",
+                    ),
                   ),
                 ),
                 // Text("1 Day Ago", style: TextStyle(color: Colors.grey))

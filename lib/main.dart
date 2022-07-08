@@ -3,6 +3,7 @@ import 'package:buffer/screens/home_screen.dart';
 import 'package:buffer/screens/login_screen.dart';
 import 'package:buffer/screens/sign_up.dart';
 import 'package:buffer/screens/splash_screen.dart';
+import 'package:buffer/widgets/custom_nav_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
             } else if (snapshot.hasError) {
               return const Center(child: Text('Something Went Wrong'));
             } else if (snapshot.hasData) {
-              return const HomeScreen();
+              return const CustomNavigationBar();
             } else {
               return const SplashScreen();
               // return const AuthPage();

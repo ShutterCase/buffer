@@ -2,8 +2,8 @@ import 'package:buffer/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import '../widgets/home_body.dart';
+import '../widgets/home_card_list.dart';
+import '../widgets/home_stories.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
@@ -43,7 +43,20 @@ class _HomeScreenState extends State<HomeScreen> {
           )
         ],
       ),
-      body: const HomeBody(),
+      body: ListView(
+        children: <Widget>[
+          Container(
+            color: Colors.black12,
+            height: MediaQuery.of(context).size.height * 0.19,
+            child: const HomeStories(),
+          ),
+          Container(
+            color: Colors.black12,
+            height: MediaQuery.of(context).size.height * 0.80,
+            child: const HomeCardList(),
+          ),
+        ],
+      ),
     );
   }
 }
