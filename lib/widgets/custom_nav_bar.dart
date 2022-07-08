@@ -1,4 +1,5 @@
 import 'package:buffer/constants.dart';
+import 'package:buffer/screens/secondScreen.dart';
 import 'package:flutter/material.dart';
 
 import '../screens/home_screen.dart';
@@ -11,10 +12,10 @@ class CustomNavigationBar extends StatefulWidget {
 }
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
-  int currentIndex = 0;
+  int currentIndex = 1;
   final screens = [
     const HomeScreen(),
-    const HomeScreen(),
+    const SecondScreen(),
     // NewsScreen(),
   ];
   @override
