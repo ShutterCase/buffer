@@ -1,3 +1,4 @@
+import 'package:buffer/constants.dart';
 import 'package:flutter/material.dart';
 
 import 'home_card_list.dart';
@@ -8,11 +9,18 @@ class HomeBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
+    return ListView(
       children: <Widget>[
-        SizedBox(height: MediaQuery.of(context).size.height * 0.17, child: const HomeStories()),
-        const HomeCardList(),
+        Container(
+          color: Colors.black12,
+          height: MediaQuery.of(context).size.height * 0.19,
+          child: const HomeStories(),
+        ),
+        Container(
+          color: Colors.black12,
+          height: MediaQuery.of(context).size.height * 0.80,
+          child: const HomeCardList(),
+        ),
       ],
     );
   }
