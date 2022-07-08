@@ -1,4 +1,4 @@
-import 'package:buffer/constants.dart';
+import 'package:buffer/helper/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -47,11 +47,7 @@ class _IntroScreenState extends State<IntroScreen> {
               child: SmoothPageIndicator(
                 controller: controller,
                 count: 4,
-                effect: const SlideEffect(
-                    radius: 5.0,
-                    strokeWidth: 1.5,
-                    dotColor: Colors.white,
-                    activeDotColor: Colors.indigo),
+                effect: const SlideEffect(radius: 5.0, strokeWidth: 1.5, dotColor: Colors.white, activeDotColor: Colors.indigo),
               ),
             ),
           ),
@@ -65,10 +61,7 @@ class _IntroScreenState extends State<IntroScreen> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(50),
-                  elevation: 0,
-                  primary: voiletColor),
+              style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50), elevation: 0, primary: voiletColor),
 
               onPressed: () {
                 Navigator.pushNamed(context, '/signUpScreen');

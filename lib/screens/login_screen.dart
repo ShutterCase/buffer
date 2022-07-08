@@ -5,7 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import '../helper/utils.dart';
 
-import '../constants.dart';
+import '../helper/constants.dart';
 import '../main.dart';
 import '../widgets/custom_text_field.dart';
 
@@ -49,18 +49,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     CustomTextField(
-                      validator: (value) => EmailValidator.validate(value!)
-                          ? null
-                          : "Please enter a valid email",
+                      validator: (value) => EmailValidator.validate(value!) ? null : "Please enter a valid email",
                       textEditingController: _emailController,
                       textInputType: TextInputType.emailAddress,
                       hintText: 'E-mail',
                       icon: const Icon(Icons.email),
                     ),
                     CustomTextField(
-                      validator: (value) => value != null && value.length < 8
-                          ? 'Enter min. 8 characters'
-                          : null,
+                      validator: (value) => value != null && value.length < 8 ? 'Enter min. 8 characters' : null,
                       textEditingController: _passwordController,
                       textInputType: TextInputType.visiblePassword,
                       hintText: 'Password',
@@ -71,17 +67,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             isHiddenPassword = !isHiddenPassword;
                           });
                         },
-                        child: Icon(isHiddenPassword
-                            ? Icons.visibility
-                            : Icons.visibility_off),
+                        child: Icon(isHiddenPassword ? Icons.visibility : Icons.visibility_off),
                       ),
                       isPass: isHiddenPassword,
                     ),
                     ElevatedButton.icon(
-                      style: ElevatedButton.styleFrom(
-                          minimumSize: const Size.fromHeight(50),
-                          elevation: 0,
-                          primary: voiletColor),
+                      style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50), elevation: 0, primary: voiletColor),
                       onPressed: () {
                         signIn();
                       },
@@ -99,17 +90,13 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               InkWell(
-                onTap: () =>
-                    Navigator.pushReplacementNamed(context, '/signUpScreen'),
+                onTap: () => Navigator.pushReplacementNamed(context, '/signUpScreen'),
                 child: RichText(
                   text: TextSpan(
                     text: 'Don\'t have an account ?? ',
                     style: TextStyle(fontSize: 16, color: Colors.white),
                     children: <TextSpan>[
-                      TextSpan(
-                          text: 'Sign Up',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: voiletColor)),
+                      TextSpan(text: 'Sign Up', style: TextStyle(fontWeight: FontWeight.bold, color: voiletColor)),
                       // TextSpan(text: ' world!'),
                     ],
                   ),
@@ -121,14 +108,9 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future signIn() async {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const Center(child: CircularProgressIndicator()));
+    showDialog(context: context, barrierDismissible: false, builder: (context) => const Center(child: CircularProgressIndicator()));
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim());
+      await FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailController.text.trim(), password: _passwordController.text.trim());
     } on FirebaseAuthException catch (e) {
       print(e);
       Utils.showSnackBar(e.message);

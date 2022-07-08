@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import '../constants.dart';
+import '../helper/constants.dart';
 import '../helper/utils.dart';
 import '../main.dart';
 import '../widgets/custom_text_field.dart';
@@ -58,18 +58,14 @@ class _SignUpScreen extends State<SignUpScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [
                       CustomTextField(
-                        validator: (value) => EmailValidator.validate(value!)
-                            ? null
-                            : "Please enter a valid email",
+                        validator: (value) => EmailValidator.validate(value!) ? null : "Please enter a valid email",
                         textEditingController: _emailController,
                         textInputType: TextInputType.emailAddress,
                         hintText: 'E-mail',
                         icon: const Icon(Icons.email),
                       ),
                       CustomTextField(
-                        validator: (value) => value != null && value.length < 8
-                            ? 'Enter min. 8 characters'
-                            : null,
+                        validator: (value) => value != null && value.length < 8 ? 'Enter min. 8 characters' : null,
                         textEditingController: _passwordController,
                         textInputType: TextInputType.visiblePassword,
                         hintText: 'Password',
@@ -80,9 +76,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                               isHiddenPassword = !isHiddenPassword;
                             });
                           },
-                          child: Icon(isHiddenPassword
-                              ? Icons.visibility
-                              : Icons.visibility_off),
+                          child: Icon(isHiddenPassword ? Icons.visibility : Icons.visibility_off),
                         ),
                         isPass: isHiddenPassword,
                       ),
@@ -113,8 +107,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                     TextSpan(
                         //
                         text: 'Terms and Conditions',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold, color: voiletColor)),
+                        style: TextStyle(fontWeight: FontWeight.bold, color: voiletColor)),
                     // TextSpan(text: ' world!'),
                   ],
                 ),
@@ -122,10 +115,7 @@ class _SignUpScreen extends State<SignUpScreen> {
               SizedBox(
                 width: MediaQuery.of(context).size.width * 1.0,
                 child: ElevatedButton.icon(
-                  style: ElevatedButton.styleFrom(
-                      minimumSize: const Size.fromHeight(50),
-                      elevation: 0,
-                      primary: voiletColor),
+                  style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50), elevation: 0, primary: voiletColor),
                   onPressed: () {
                     // Navigator.of(context).push(MaterialPageRoute(
                     //     builder: (context) => const HomeScreen()));
@@ -136,8 +126,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                 ),
               ),
               InkWell(
-                onTap: () =>
-                    Navigator.pushReplacementNamed(context, '/loginScreen'),
+                onTap: () => Navigator.pushReplacementNamed(context, '/loginScreen'),
                 child: RichText(
                   text: TextSpan(
                     text: 'Don\'t have an account ?? ',
@@ -147,8 +136,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                           // recognizer: TapGestureRecognizer()
                           //   ..onTap = widget.onClickedSignUp,
                           text: 'Sign In',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, color: voiletColor)),
+                          style: TextStyle(fontWeight: FontWeight.bold, color: voiletColor)),
                       // TextSpan(text: ' world!'),
                     ],
                   ),
@@ -163,14 +151,9 @@ class _SignUpScreen extends State<SignUpScreen> {
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
 
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => const Center(child: CircularProgressIndicator()));
+    showDialog(context: context, barrierDismissible: false, builder: (context) => const Center(child: CircularProgressIndicator()));
     try {
-      await FirebaseAuth.instance.createUserWithEmailAndPassword(
-          email: _emailController.text.trim(),
-          password: _passwordController.text.trim());
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _emailController.text.trim(), password: _passwordController.text.trim());
     } on FirebaseAuthException catch (e) {
       print(e);
       Utils.showSnackBar(e.message);

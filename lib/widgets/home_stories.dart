@@ -1,4 +1,4 @@
-import 'package:buffer/constants.dart';
+import 'package:buffer/helper/constants.dart';
 import 'package:buffer/models/home_stories_model.dart';
 import 'package:flutter/material.dart';
 
