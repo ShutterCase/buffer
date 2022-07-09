@@ -1,6 +1,5 @@
 import 'package:buffer/helper/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../widgets/home_card_list.dart';
 import '../widgets/home_stories.dart';
@@ -50,11 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
             height: MediaQuery.of(context).size.height * 0.19,
             child: const HomeStories(),
           ),
-          Container(
-            color: Colors.black12,
-            height: MediaQuery.of(context).size.height * 0.80,
-            child: const HomeCardList(),
-          ),
+          const HomeCardList(),
         ],
       ),
     );

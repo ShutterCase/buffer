@@ -18,6 +18,8 @@ class _HomeCardListState extends State<HomeCardList> {
   Widget build(BuildContext context) {
     // var deviceSize = MediaQuery.of(context).size;
     return ListView.separated(
+        // physics: NeverScrollableScrollPhysics(),
+        primary: false,
         shrinkWrap: true,
         separatorBuilder: (BuildContext context, int index) => const Divider(
               height: 3,
@@ -64,7 +66,9 @@ class _HomeCardListState extends State<HomeCardList> {
                         children: <Widget>[
                           IconButton(
                             icon: Icon(
-                              isPressed ? Icons.favorite : FontAwesomeIcons.heart,
+                              isPressed
+                                  ? Icons.favorite
+                                  : FontAwesomeIcons.heart,
                               color: isPressed ? Colors.red : whiteColor,
                             ),
                             color: isPressed ? Colors.red : Colors.black,
