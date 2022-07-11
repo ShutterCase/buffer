@@ -39,7 +39,7 @@ class MyApp extends StatelessWidget {
             } else if (snapshot.hasData) {
               return const CustomNavigationBar();
             } else {
-              return const SplashScreen();
+              return const IntroScreen();
               // return const AuthPage();
             }
           }),

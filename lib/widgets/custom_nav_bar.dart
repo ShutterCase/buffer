@@ -1,8 +1,9 @@
 import 'package:buffer/helper/constants.dart';
 import 'package:buffer/screens/secondScreen.dart';
 import 'package:flutter/material.dart';
-
+import '../screens/check_box_screen.dart';
 import '../screens/home_screen.dart';
+import '../screens/profile_screen.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   const CustomNavigationBar({Key? key}) : super(key: key);
@@ -12,11 +13,12 @@ class CustomNavigationBar extends StatefulWidget {
 }
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
-  int currentIndex = 1;
+  int currentIndex = 3;
   final screens = [
     const HomeScreen(),
     const SecondScreen(),
-    // NewsScreen(),
+    const CheckBoxScreen(),
+    const ProfileScreen(),
   ];
   @override
   Widget build(BuildContext context) {
@@ -40,6 +42,14 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
             BottomNavigationBarItem(
               label: 'Home',
               icon: Icon(Icons.home),
+            ),
+            BottomNavigationBarItem(
+              label: 'gallery',
+              icon: Icon(Icons.browse_gallery),
+            ),
+            BottomNavigationBarItem(
+              label: 'checkbox',
+              icon: Icon(Icons.align_horizontal_right),
             ),
             BottomNavigationBarItem(
               label: 'Profile',
