@@ -1,17 +1,10 @@
-import 'dart:collection';
 import 'dart:developer';
 import 'dart:io';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:uuid/uuid.dart';
-
-import '../main.dart';
-import '../widgets/custom_shape_widget.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -21,10 +14,17 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
+  bool isLoading = false;
+
   TextEditingController nameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController ageController = TextEditingController();
   TextEditingController detailController = TextEditingController();
+
+  String name = '';
+  String email = '';
+  String age = '';
+  String detail = "";
   File? profilepic;
 
   void saveUser() async {
@@ -41,45 +41,55 @@ class _ProfileScreenState extends State<ProfileScreen> {
     detailController.clear();
 
     if (name != "" && email != "" && detailString != "") {
-      UploadTask uploadTask = FirebaseStorage.instance.ref().child("profilepictures").child(Uuid().v1()).putFile(profilepic!);
-
-      TaskSnapshot taskSnapshot = await uploadTask;
-      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      // UploadTask uploadTask = FirebaseStorage.instance.ref().child("profilepictures").child(Uuid().v1()).putFile(profilepic!);
+      //
+      // TaskSnapshot taskSnapshot = await uploadTask;
+      // String downloadUrl = await taskSnapshot.ref.getDownloadURL();
       var myMap = new Map();
-      myMap['name'] = 'lostcoder';
-      myMap['password'] = 'ihateprogramming';
+      myMap['name'] = name;
+      myMap['email'] = email;
+      myMap['age'] = age;
+      myMap['detailString'] = detailString;
 
       FirebaseDatabase.instance.ref("users").child(FirebaseAuth.instance.currentUser!.uid).set(myMap);
-
-      // await ref.set({
-      //   "name": name,
-      //   "email": email,
-      //   "age": age,
-      //   "profilePic": downloadUrl,
-      //   "detail": detailString,
-      //   "UserDetails": [name, email, age, detailString]
-      // });
-
-      // Map<String, dynamic> userData = {
-      //   "name": name,
-      //   "email": email,
-      //   "age": age,
-      //   "profilepic": downloadUrl,
-      //   "detail": detailString,
-      //   "UserDetails": [name, email, age, detailString]
-      // };
       print('siddhant');
-      // print(userData);
-
-      // FirebaseFirestore.instance.collection("users").add(userData);
       log("User created!");
     } else {
       log("Please fill all the fields!");
     }
 
-    setState(() {
-      profilepic = null;
+    // setState(() {
+    //   profilepic = null;
+    // });
+  }
+
+  void dataChanges() {
+    FirebaseDatabase.instance.ref("users").child(FirebaseAuth.instance.currentUser!.uid).onValue.listen((event) {
+      var checker = event.snapshot.child("name").value;
+
+      if (checker != null) {
+        setState(() {
+          name = event.snapshot.child("name").value.toString();
+          email = event.snapshot.child("email").value.toString();
+          age = event.snapshot.child("age").value.toString();
+          detail = event.snapshot.child("detailString").value.toString();
+          isLoading = true;
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+      }
     });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    dataChanges();
+    // checkChanges();
+    super.initState();
   }
 
   @override
@@ -113,79 +123,92 @@ class _ProfileScreenState extends State<ProfileScreen> {
       //   backgroundColor: const Color(0xff555555),
       //   // title: const Text('Profile Screen'),
       // ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Center(
-          child: SingleChildScrollView(
-            reverse: true,
-            child: Column(
-              // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                CupertinoButton(
-                  onPressed: () async {
-                    XFile? selectedImage = await ImagePicker().pickImage(source: ImageSource.camera);
+      body: isLoading
+          ? Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("Profile comeplete"),
+                  Text(name),
+                  Text(email),
+                  Text(age),
+                  Text(detail),
+                ],
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              child: Center(
+                child: SingleChildScrollView(
+                  reverse: true,
+                  child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      CupertinoButton(
+                        onPressed: () async {
+                          XFile? selectedImage = await ImagePicker().pickImage(source: ImageSource.camera);
 
-                    if (selectedImage != null) {
-                      File convertedFile = File(selectedImage.path);
-                      setState(() {
-                        profilepic = convertedFile;
-                      });
-                      log("Image selected!");
-                    } else {
-                      log("No image selected!");
-                    }
-                  },
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: (profilepic != null) ? FileImage(profilepic!) : null,
-                    backgroundColor: Colors.grey,
-                  ),
-                ),
-                textField(
-                  hintText: 'Name',
-                  controller: nameController,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.07),
-                textField(
-                  hintText: 'Email',
-                  controller: emailController,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.07),
-                textField(
-                  hintText: 'Age',
-                  controller: ageController,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.07),
-                textField(
-                  hintText: 'Detail',
-                  controller: detailController,
-                ),
-                SizedBox(height: MediaQuery.of(context).size.width * 0.07),
-                SizedBox(
-                  height: 50,
-                  width: double.infinity,
-                  child: RaisedButton(
-                    onPressed: () {
-                      saveUser();
-                    },
-                    color: Colors.black54,
-                    child: const Center(
-                      child: Text(
-                        "Update",
-                        style: TextStyle(
-                          fontSize: 23,
-                          color: Colors.white,
+                          if (selectedImage != null) {
+                            File convertedFile = File(selectedImage.path);
+                            setState(() {
+                              profilepic = convertedFile;
+                            });
+                            log("Image selected!");
+                          } else {
+                            log("No image selected!");
+                          }
+                        },
+                        child: CircleAvatar(
+                          radius: 50,
+                          backgroundImage: (profilepic != null) ? FileImage(profilepic!) : null,
+                          backgroundColor: Colors.grey,
                         ),
                       ),
-                    ),
+                      textField(
+                        hintText: 'Name',
+                        controller: nameController,
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.width * 0.07),
+                      textField(
+                        hintText: 'Email',
+                        controller: emailController,
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.width * 0.07),
+                      textField(
+                        hintText: 'Age',
+                        controller: ageController,
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.width * 0.07),
+                      textField(
+                        hintText: 'Detail',
+                        controller: detailController,
+                      ),
+                      SizedBox(height: MediaQuery.of(context).size.width * 0.07),
+                      SizedBox(
+                        height: 50,
+                        width: double.infinity,
+                        child: RaisedButton(
+                          onPressed: () {
+                            saveUser();
+                          },
+                          color: Colors.black54,
+                          child: const Center(
+                            child: Text(
+                              "Update",
+                              style: TextStyle(
+                                fontSize: 23,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                      )
+                    ],
                   ),
-                )
-              ],
+                ),
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 
