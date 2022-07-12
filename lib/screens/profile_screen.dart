@@ -1,10 +1,9 @@
-import 'dart:developer';
-import 'dart:io';
+import 'package:buffer/helper/constants.dart';
+import 'package:buffer/widgets/create_profile.dart';
+import 'package:buffer/widgets/loading_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -16,52 +15,10 @@ class ProfileScreen extends StatefulWidget {
 class _ProfileScreenState extends State<ProfileScreen> {
   bool isLoading = false;
 
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController ageController = TextEditingController();
-  TextEditingController detailController = TextEditingController();
-
   String name = '';
   String email = '';
   String age = '';
   String detail = "";
-  File? profilepic;
-
-  void saveUser() async {
-    String name = nameController.text.trim();
-    String email = emailController.text.trim();
-    String ageString = ageController.text.trim();
-    String detailString = detailController.text.trim();
-
-    int age = int.parse(ageString);
-
-    nameController.clear();
-    emailController.clear();
-    ageController.clear();
-    detailController.clear();
-
-    if (name != "" && email != "" && detailString != "") {
-      // UploadTask uploadTask = FirebaseStorage.instance.ref().child("profilepictures").child(Uuid().v1()).putFile(profilepic!);
-      //
-      // TaskSnapshot taskSnapshot = await uploadTask;
-      // String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-      var myMap = new Map();
-      myMap['name'] = name;
-      myMap['email'] = email;
-      myMap['age'] = age;
-      myMap['detailString'] = detailString;
-
-      FirebaseDatabase.instance.ref("users").child(FirebaseAuth.instance.currentUser!.uid).set(myMap);
-      print('siddhant');
-      log("User created!");
-    } else {
-      log("Please fill all the fields!");
-    }
-
-    // setState(() {
-    //   profilepic = null;
-    // });
-  }
 
   void dataChanges() {
     FirebaseDatabase.instance.ref("users").child(FirebaseAuth.instance.currentUser!.uid).onValue.listen((event) {
@@ -73,6 +30,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           email = event.snapshot.child("email").value.toString();
           age = event.snapshot.child("age").value.toString();
           detail = event.snapshot.child("detailString").value.toString();
+          LoadingIndicatorWidget();
+
           isLoading = true;
         });
       } else {
@@ -88,176 +47,137 @@ class _ProfileScreenState extends State<ProfileScreen> {
     // TODO: implement initState
 
     dataChanges();
-    // checkChanges();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // resizeToAvoidBottomInset: true,
-      // appBar: AppBar(
-      //   elevation: 0.0,
-      //   // toolbarHeight: 200,
-      //   // flexibleSpace: ClipPath(
-      //   //   clipper: Customshape(),
-      //   //   child: Stack(
-      //   //     children: [
-      //   //       Container(
-      //   //         height: 200,
-      //   //         width: MediaQuery.of(context).size.width,
-      //   //         color: Colors.red,
-      //   //       ),
-      //   //       Align(
-      //   //         alignment: Alignment.bottomCenter,
-      //   //         child: CircleAvatar(
-      //   //           radius: 50,
-      //   //           // backgroundImage:
-      //   //           // (profilepic != null) ? FileImage(profilepic!) : null,
-      //   //           backgroundColor: Colors.grey,
-      //   //         ),
-      //   //       )
-      //   //     ],
-      //   //   ),
-      //   // ),
-      //   backgroundColor: const Color(0xff555555),
-      //   // title: const Text('Profile Screen'),
-      // ),
-      body: isLoading
-          ? Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+        // appBar: AppBar(
+        //   title: Text('Create Profile'),
+        // ),
+        body: isLoading
+            ? Stack(
                 children: [
-                  Text("Profile comeplete"),
-                  Text(name),
-                  Text(email),
-                  Text(age),
-                  Text(detail),
-                ],
-              ),
-            )
-          : Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-              child: Center(
-                child: SingleChildScrollView(
-                  reverse: true,
-                  child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.center,
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      CupertinoButton(
-                        onPressed: () async {
-                          XFile? selectedImage = await ImagePicker().pickImage(source: ImageSource.camera);
-
-                          if (selectedImage != null) {
-                            File convertedFile = File(selectedImage.path);
-                            setState(() {
-                              profilepic = convertedFile;
-                            });
-                            log("Image selected!");
-                          } else {
-                            log("No image selected!");
-                          }
-                        },
-                        child: CircleAvatar(
-                          radius: 50,
-                          backgroundImage: (profilepic != null) ? FileImage(profilepic!) : null,
-                          backgroundColor: Colors.grey,
-                        ),
-                      ),
-                      textField(
-                        hintText: 'Name',
-                        controller: nameController,
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.width * 0.07),
-                      textField(
-                        hintText: 'Email',
-                        controller: emailController,
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.width * 0.07),
-                      textField(
-                        hintText: 'Age',
-                        controller: ageController,
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.width * 0.07),
-                      textField(
-                        hintText: 'Detail',
-                        controller: detailController,
-                      ),
-                      SizedBox(height: MediaQuery.of(context).size.width * 0.07),
                       SizedBox(
-                        height: 50,
-                        width: double.infinity,
-                        child: RaisedButton(
-                          onPressed: () {
-                            saveUser();
-                          },
-                          color: Colors.black54,
-                          child: const Center(
-                            child: Text(
-                              "Update",
-                              style: TextStyle(
-                                fontSize: 23,
-                                color: Colors.white,
+                        width: double.maxFinite,
+                        height: MediaQuery.of(context).size.height * 0.35,
+                        child: Stack(
+                          children: [
+                            SizedBox(
+                              height: double.maxFinite,
+                              width: double.maxFinite,
+                              child: Image.network(
+                                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-jVtQ0FFAZzBdbf4s0EsNsZJGrcRpKCITwv8PAMalrpHn45krrsU1BbFb82LsyCznPks&usqp=CAU",
+                                fit: BoxFit.cover,
                               ),
                             ),
-                          ),
+                            Padding(
+                              padding: const EdgeInsets.only(right: 5, bottom: 7),
+                              child: Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.camera,
+                                      size: 35,
+                                    ),
+                                    onPressed: () {},
+                                  )),
+                            ),
+                          ],
                         ),
-                      )
+                      ),
+                      SizedBox(
+                        // color: Colors.yellow,
+                        height: MediaQuery.of(context).size.height * 0.55,
+                        width: double.maxFinite,
+                      ),
                     ],
                   ),
-                ),
-              ),
-            ),
-    );
-  }
-
-  Widget textField({required hintText, required TextEditingController controller}) {
-    return Material(
-      shadowColor: Colors.grey,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: TextField(
-        controller: controller,
-        decoration: InputDecoration(
-            hintText: hintText,
-            hintStyle: const TextStyle(
-              letterSpacing: 2,
-              color: Colors.black54,
-              fontWeight: FontWeight.bold,
-            ),
-            fillColor: Colors.white30,
-            filled: true,
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide.none)),
-      ),
-    );
+                  Padding(
+                    padding: const EdgeInsets.only(top: 20, right: 15, left: 15, bottom: 10),
+                    child: Column(
+                      children: [
+                        const Align(
+                          alignment: Alignment.topCenter,
+                          child: Text(
+                            'Profile',
+                            style: TextStyle(color: whiteColor, fontSize: 30, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.172),
+                        const CircleAvatar(
+                          radius: 75,
+                          backgroundColor: whiteColor,
+                          child: CircleAvatar(
+                            radius: 70,
+                            backgroundImage: NetworkImage("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-jVtQ0FFAZzBdbf4s0EsNsZJGrcRpKCITwv8PAMalrpHn45krrsU1BbFb82LsyCznPks&usqp=CAU"),
+                          ),
+                        ),
+                        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
+                        Text(
+                          name,
+                          style: const TextStyle(color: whiteColor, fontSize: 24, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          detail,
+                          style: TextStyle(color: grey, fontSize: 16, fontWeight: FontWeight.bold),
+                        ),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              ListTileWidget(
+                                name: name,
+                                title: 'Name',
+                              ),
+                              const Divider(height: 2),
+                              ListTileWidget(
+                                name: email,
+                                title: 'Email',
+                              ),
+                              const Divider(height: 2),
+                              ListTileWidget(
+                                name: age,
+                                title: 'Age',
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
+              )
+            : const CreateProfile());
   }
 }
 
-class HeaderCurvedContainer extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()..color = const Color(0xff555555);
-    Path path = Path()
-      ..relativeLineTo(0, 150)
-      ..quadraticBezierTo(size.width / 2, 225, size.width, 150)
-      ..relativeLineTo(0, -150)
-      ..close();
-    canvas.drawPath(path, paint);
-  }
+class ListTileWidget extends StatelessWidget {
+  const ListTileWidget({
+    Key? key,
+    required this.name,
+    required this.title,
+  }) : super(key: key);
+
+  final String name;
+  final String title;
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) => false;
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(
+        title,
+        style: const TextStyle(color: voiletColor, fontWeight: FontWeight.w600, fontSize: 16),
+      ),
+      subtitle: Text(
+        name,
+        style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
+      ),
+      // contentPadding: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
+    );
+  }
 }
-//
-// CircleAvatar(
-// backgroundColor: Colors.black54,
-// child: IconButton(
-// icon: Icon(
-// Icons.edit,
-// color: Colors.white,
-// ),
-// onPressed: () {},
-// ),
-// ),
