@@ -30,7 +30,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           email = event.snapshot.child("email").value.toString();
           age = event.snapshot.child("age").value.toString();
           detail = event.snapshot.child("detailString").value.toString();
-          LoadingIndicatorWidget();
 
           isLoading = true;
         });
