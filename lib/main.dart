@@ -1,3 +1,4 @@
+import 'package:buffer/helper/constants.dart';
 import 'package:buffer/helper/route_generator.dart';
 import 'package:buffer/screens/home_screen.dart';
 import 'package:buffer/screens/login_screen.dart';
@@ -28,7 +29,11 @@ class MyApp extends StatelessWidget {
       navigatorKey: navigatorKey,
       title: 'Buffer',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark(),
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      themeMode: ThemeMode.dark,
+      darkTheme: ThemeData(brightness: Brightness.dark, scaffoldBackgroundColor: Colors.black, appBarTheme: AppBarTheme(color: Colors.black)),
       home: StreamBuilder<User?>(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {

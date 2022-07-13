@@ -1,11 +1,14 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:buffer/helper/constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class CreateProfile extends StatefulWidget {
   const CreateProfile({Key? key}) : super(key: key);
@@ -36,26 +39,27 @@ class _CreateProfileState extends State<CreateProfile> {
     detailController.clear();
 
     if (name != "" && email != "" && detailString != "") {
-      // UploadTask uploadTask = FirebaseStorage.instance.ref().child("profilepictures").child(Uuid().v1()).putFile(profilepic!);
-      //
-      // TaskSnapshot taskSnapshot = await uploadTask;
-      // String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      UploadTask uploadTask = FirebaseStorage.instance.ref().child("profilepictures").child(Uuid().v1()).putFile(profilepic!);
+
+      TaskSnapshot taskSnapshot = await uploadTask;
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
       var myMap = new Map();
       myMap['name'] = name;
       myMap['email'] = email;
       myMap['age'] = age;
       myMap['detailString'] = detailString;
+      myMap['image'] = downloadUrl;
 
       FirebaseDatabase.instance.ref("users").child(FirebaseAuth.instance.currentUser!.uid).set(myMap);
-      print('siddhant');
+
       log("User created!");
     } else {
       log("Please fill all the fields!");
     }
 
-    // setState(() {
-    //   profilepic = null;
-    // });
+    setState(() {
+      profilepic = null;
+    });
   }
 
   @override
@@ -84,9 +88,13 @@ class _CreateProfileState extends State<CreateProfile> {
                   }
                 },
                 child: CircleAvatar(
-                  radius: 50,
-                  backgroundImage: (profilepic != null) ? FileImage(profilepic!) : null,
-                  backgroundColor: Colors.grey,
+                  radius: 53,
+                  backgroundColor: whiteColor,
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: (profilepic != null) ? FileImage(profilepic!) : null,
+                    backgroundColor: Colors.grey,
+                  ),
                 ),
               ),
               textField(
@@ -116,7 +124,7 @@ class _CreateProfileState extends State<CreateProfile> {
                   onPressed: () {
                     saveUser();
                   },
-                  color: Colors.black54,
+                  color: voiletColor,
                   child: const Center(
                     child: Text(
                       "Update",
