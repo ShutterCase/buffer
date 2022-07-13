@@ -7,6 +7,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
 
@@ -25,7 +26,7 @@ class _CreateProfileState extends State<CreateProfile> {
   TextEditingController ageController = TextEditingController();
   TextEditingController detailController = TextEditingController();
 
-  void saveUser() async {
+  void saveUser(File profilePic) async {
     String name = nameController.text.trim();
     String email = emailController.text.trim();
     String ageString = ageController.text.trim();
@@ -39,7 +40,7 @@ class _CreateProfileState extends State<CreateProfile> {
     detailController.clear();
 
     if (name != "" && email != "" && detailString != "") {
-      UploadTask uploadTask = FirebaseStorage.instance.ref().child("profilepictures").child(Uuid().v1()).putFile(profilepic!);
+      UploadTask uploadTask = FirebaseStorage.instance.ref().child("profilepictures").child(Uuid().v1()).putFile(profilePic);
 
       TaskSnapshot taskSnapshot = await uploadTask;
       String downloadUrl = await taskSnapshot.ref.getDownloadURL();
@@ -62,6 +63,45 @@ class _CreateProfileState extends State<CreateProfile> {
     });
   }
 
+  getCropImage(XFile? image) async {
+    if (image != null) {
+      final cropImage = await ImageCropper().cropImage(sourcePath: image.path, compressQuality: 50);
+      if (cropImage != null) {
+        profilepic = File(cropImage.path);
+        setState(() {
+          saveUser(profilepic!);
+          log("given to editPhoto");
+        });
+      }
+    } else {
+      return null;
+    }
+  }
+
+  getImage(ImageSource source) async {
+    XFile? selectedImage = await ImagePicker().pickImage(
+      source: source,
+    );
+
+    getCropImage(selectedImage);
+
+    if (selectedImage != null) {
+      // File convertedFile = File(selectedImage.path);
+      // setState(() {
+      //   profilepic = convertedFile;
+      //   editPhotoUpload();
+      // });
+      log("Image selected!");
+    } else {
+      log("No image selected!");
+      // Navigator.of(context).pop;
+
+      setState(() {
+        profilepic = null;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -74,18 +114,8 @@ class _CreateProfileState extends State<CreateProfile> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CupertinoButton(
-                onPressed: () async {
-                  XFile? selectedImage = await ImagePicker().pickImage(source: ImageSource.camera);
-
-                  if (selectedImage != null) {
-                    File convertedFile = File(selectedImage.path);
-                    setState(() {
-                      profilepic = convertedFile;
-                    });
-                    log("Image selected!");
-                  } else {
-                    log("No image selected!");
-                  }
+                onPressed: () {
+                  _bottomSheetWidget();
                 },
                 child: CircleAvatar(
                   radius: 53,
@@ -122,7 +152,7 @@ class _CreateProfileState extends State<CreateProfile> {
                 width: double.infinity,
                 child: RaisedButton(
                   onPressed: () {
-                    saveUser();
+                    saveUser(profilepic!);
                   },
                   color: voiletColor,
                   child: const Center(
@@ -138,6 +168,49 @@ class _CreateProfileState extends State<CreateProfile> {
               )
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  void _bottomSheetWidget() {
+    showModalBottomSheet(
+      enableDrag: false,
+      isDismissible: false,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+      ),
+      context: context,
+      builder: (context) => Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              "Pick an Image",
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: grey),
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera),
+              title: Text('Camera'),
+              onTap: () {
+                getImage(ImageSource.camera);
+                Navigator.of(context).pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.browse_gallery),
+              title: Text('Gallery'),
+              onTap: () {
+                getImage(ImageSource.gallery);
+                Navigator.of(context).pop(context);
+              },
+            ),
+          ],
         ),
       ),
     );

@@ -1,9 +1,8 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:buffer/helper/constants.dart';
 import 'package:buffer/widgets/create_profile.dart';
-import 'package:buffer/widgets/loading_indicator.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -29,7 +28,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String pic = '';
 
   File? profilepic;
-  CroppedFile? finalCroppedImage;
 
   void dataChanges() {
     FirebaseDatabase.instance.ref("users").child(FirebaseAuth.instance.currentUser!.uid).onValue.listen((event) {
@@ -59,7 +57,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     TaskSnapshot taskSnapshot = await uploadTask;
     String downloadUrl = await taskSnapshot.ref.getDownloadURL();
     await FirebaseDatabase.instance.ref("users").child(FirebaseAuth.instance.currentUser!.uid).update({"image": downloadUrl});
-    log("compeleted");
+    log("completed");
   }
 
   getCropImage(XFile? image) async {
@@ -85,16 +83,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
     getCropImage(selectedImage);
 
     if (selectedImage != null) {
-      // File convertedFile = File(selectedImage.path);
-      // setState(() {
-      //   profilepic = convertedFile;
-      //   editPhotoUpload();
-      // });
       log("Image selected!");
     } else {
       log("No image selected!");
-      // Navigator.of(context).pop;
-
       setState(() {
         profilepic = null;
       });
@@ -104,7 +95,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     // TODO: implement initState
-
     dataChanges();
     super.initState();
   }
@@ -112,9 +102,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        // appBar: AppBar(
-        //   title: Text('Create Profile'),
-        // ),
         body: isLoading
             ? Stack(
                 children: [
@@ -154,7 +141,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ),
                                   onPressed: () {
                                     // getImage();
-                                    bottomSheetWidget();
+                                    _bottomSheetWidget();
                                   },
                                 ),
                               ),
@@ -229,7 +216,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             : const CreateProfile());
   }
 
-  void bottomSheetWidget() {
+  void _bottomSheetWidget() {
     showModalBottomSheet(
       enableDrag: false,
       isDismissible: false,
