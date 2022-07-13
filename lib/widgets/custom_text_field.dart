@@ -7,24 +7,18 @@ class CustomTextField extends StatelessWidget {
   final TextInputType textInputType;
   final Icon? icon;
   final Widget? suffixicon;
+  final int? maxLines;
   final FormFieldValidator<String?>? validator;
   const CustomTextField(
-      {Key? key,
-      required this.textEditingController,
-      required this.textInputType,
-      required this.hintText,
-      this.icon,
-      this.suffixicon,
-      this.isPass = false,
-      this.validator})
+      {Key? key, required this.textEditingController, required this.textInputType, required this.hintText, this.icon, this.suffixicon, this.isPass = false, this.validator, this.maxLines})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final inputBorder =
-        OutlineInputBorder(borderSide: Divider.createBorderSide(context));
+    final inputBorder = OutlineInputBorder(borderSide: Divider.createBorderSide(context));
 
     return TextFormField(
+      maxLines: maxLines,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: validator,
       controller: textEditingController,
