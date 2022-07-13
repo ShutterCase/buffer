@@ -129,9 +129,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             SizedBox(
                               height: double.maxFinite,
                               width: double.maxFinite,
-                              child: Image.network(
-                                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-jVtQ0FFAZzBdbf4s0EsNsZJGrcRpKCITwv8PAMalrpHn45krrsU1BbFb82LsyCznPks&usqp=CAU",
-                                fit: BoxFit.cover,
+                              child: Stack(
+                                children: [
+                                  Image.network(
+                                    pic,
+                                    height: double.maxFinite,
+                                    width: double.maxFinite,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  Container(
+                                    color: Colors.black.withOpacity(0.5),
+                                  )
+                                ],
                               ),
                             ),
                             Padding(
