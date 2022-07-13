@@ -1,7 +1,14 @@
-import 'package:buffer/widgets/custom_text_field.dart';
-import 'package:flutter/material.dart';
+import 'dart:developer';
+import 'dart:io';
 
-import '../models/chips_model.dart';
+import 'package:buffer/widgets/custom_text_field.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 
 class PostScreen extends StatefulWidget {
   const PostScreen({Key? key}) : super(key: key);
@@ -11,8 +18,70 @@ class PostScreen extends StatefulWidget {
 }
 
 class _PostScreenState extends State<PostScreen> {
-  TextEditingController nameController = TextEditingController();
+  TextEditingController titleController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
+  File? postPic;
+
+  getPostToFirebase(File image) async {
+    String title = titleController.text.trim();
+    String description = descriptionController.text.trim();
+
+    titleController.clear();
+    descriptionController.clear();
+
+    if (title != "" && description != "") {
+      UploadTask uploadTask = FirebaseStorage.instance.ref().child("postImage").child(Uuid().v1()).putFile(image);
+
+      TaskSnapshot taskSnapshot = await uploadTask;
+      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+      var postMap = new Map();
+      postMap['title'] = title;
+      postMap['description'] = description;
+      postMap['Image'] = downloadUrl;
+      FirebaseDatabase.instance.ref("post").child(FirebaseAuth.instance.currentUser!.uid).set(postMap);
+      log(" updated");
+    } else {
+      log("Not updated");
+    }
+
+    setState(() {
+      postPic = null;
+    });
+  }
+
+  getCropImage(XFile? image) async {
+    if (image != null) {
+      final cropImage = await ImageCropper().cropImage(sourcePath: image.path, compressQuality: 50);
+      if (cropImage != null) {
+        postPic = File(cropImage.path);
+        setState(() {
+          getPostToFirebase(postPic!);
+          log("given to editPhoto");
+        });
+      }
+    } else {
+      return null;
+    }
+  }
+
+  getImage(ImageSource source) async {
+    XFile? selectedImage = await ImagePicker().pickImage(
+      source: source,
+    );
+
+    getCropImage(selectedImage!);
+
+    if (selectedImage != null) {
+      log("Image selected!");
+    } else {
+      log("No image selected!");
+
+      setState(() {
+        postPic = null;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,15 +90,20 @@ class _PostScreenState extends State<PostScreen> {
           padding: const EdgeInsets.only(top: 30, right: 10, left: 10),
           child: Column(
             children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: SizedBox(
-                  height: MediaQuery.of(context).size.height * 0.3,
-                  child: Image.network(
-                    "https://designshack.net/wp-content/uploads/placeholder-image.png",
-                    fit: BoxFit.cover,
-                    height: double.maxFinite,
-                    width: double.maxFinite,
+              GestureDetector(
+                onTap: () {
+                  getImage(ImageSource.camera);
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.3,
+                    child: Image.network(
+                      "https://designshack.net/wp-content/uploads/placeholder-image.png",
+                      fit: BoxFit.cover,
+                      height: double.maxFinite,
+                      width: double.maxFinite,
+                    ),
                   ),
                 ),
               ),
@@ -45,13 +119,13 @@ class _PostScreenState extends State<PostScreen> {
                       "Title",
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                     ),
-                    CustomTextField(textEditingController: nameController, textInputType: TextInputType.name, hintText: 'Title'),
+                    CustomTextField(textEditingController: titleController, textInputType: TextInputType.name, hintText: 'Title'),
                     const Text(
                       "Description",
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                     ),
                     CustomTextField(
-                      textEditingController: nameController,
+                      textEditingController: descriptionController,
                       textInputType: TextInputType.name,
                       hintText: 'Add Your Bio',
                       maxLines: 4,
@@ -89,6 +163,11 @@ class _PostScreenState extends State<PostScreen> {
           ),
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.share),
+          onPressed: () {
+            getPostToFirebase(postPic!);
+          }),
     );
   }
 }
