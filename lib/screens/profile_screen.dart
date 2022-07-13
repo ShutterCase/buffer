@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:buffer/helper/constants.dart';
 import 'package:buffer/widgets/create_profile.dart';
+import 'package:buffer/widgets/loading_indicator.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -19,8 +20,8 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  bool isLoading = false;
-
+  bool isLoading = true;
+  bool checker = false;
   String name = '';
   String email = '';
   int age = 0;
@@ -30,10 +31,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
   File? profilepic;
 
   void dataChanges() {
-    FirebaseDatabase.instance.ref("users").child(FirebaseAuth.instance.currentUser!.uid).onValue.listen((event) {
-      var checker = event.snapshot.child("name").value;
+    FirebaseDatabase.instance
+        .ref("users")
+        .child(FirebaseAuth.instance.currentUser!.uid)
+        .onValue
+        .listen((event) {
+      if (!mounted) return;
+      setState(() {
+        isLoading = false;
+      });
 
-      if (checker != null) {
+      var data = event.snapshot.child("name").value;
+
+      if (data != null) {
+        if (!mounted) return;
         setState(() {
           name = event.snapshot.child("name").value.toString();
           email = event.snapshot.child("email").value.toString();
@@ -41,28 +52,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
           detail = event.snapshot.child("detailString").value.toString();
           pic = event.snapshot.child("image").value.toString();
 
-          isLoading = true;
+          checker = true;
+
+          // LoadingIndicatorWidget();
         });
       } else {
+        if (!mounted) return;
         setState(() {
-          isLoading = false;
+          checker = false;
         });
       }
     });
   }
 
   void editPhotoUpload(File finalCroppedImage) async {
-    UploadTask uploadTask = FirebaseStorage.instance.ref().child("profilepictures").child(Uuid().v1()).putFile(finalCroppedImage);
+    UploadTask uploadTask = FirebaseStorage.instance
+        .ref()
+        .child("profilepictures")
+        .child(Uuid().v1())
+        .putFile(finalCroppedImage);
     log("run");
     TaskSnapshot taskSnapshot = await uploadTask;
     String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-    await FirebaseDatabase.instance.ref("users").child(FirebaseAuth.instance.currentUser!.uid).update({"image": downloadUrl});
+    await FirebaseDatabase.instance
+        .ref("users")
+        .child(FirebaseAuth.instance.currentUser!.uid)
+        .update({"image": downloadUrl});
     log("completed");
   }
 
   getCropImage(XFile? image) async {
     if (image != null) {
-      final cropImage = await ImageCropper().cropImage(sourcePath: image.path, compressQuality: 50);
+      final cropImage = await ImageCropper()
+          .cropImage(sourcePath: image.path, compressQuality: 50);
       if (cropImage != null) {
         File convertedFile = File(cropImage.path);
         setState(() {
@@ -102,118 +124,137 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: isLoading
-            ? Stack(
-                children: [
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: double.maxFinite,
-                        height: MediaQuery.of(context).size.height * 0.35,
-                        child: Stack(
-                          children: [
-                            SizedBox(
-                              height: double.maxFinite,
-                              width: double.maxFinite,
-                              child: Stack(
-                                children: [
-                                  Image.network(
-                                    pic,
-                                    height: double.maxFinite,
-                                    width: double.maxFinite,
-                                    fit: BoxFit.cover,
-                                  ),
-                                  Container(
-                                    color: Colors.black.withOpacity(0.5),
-                                  )
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(right: 5, bottom: 7),
-                              child: Align(
-                                alignment: Alignment.bottomRight,
-                                child: IconButton(
-                                  icon: const Icon(
-                                    Icons.camera,
-                                    size: 35,
-                                  ),
-                                  onPressed: () {
-                                    // getImage();
-                                    _bottomSheetWidget();
-                                  },
+      body: isLoading
+          ? LoadingIndicatorWidget()
+          : checker
+              ? Stack(
+                  children: [
+                    Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: double.maxFinite,
+                          height: MediaQuery.of(context).size.height * 0.35,
+                          child: Stack(
+                            children: [
+                              SizedBox(
+                                height: double.maxFinite,
+                                width: double.maxFinite,
+                                child: Stack(
+                                  children: [
+                                    Image.network(
+                                      pic,
+                                      height: double.maxFinite,
+                                      width: double.maxFinite,
+                                      fit: BoxFit.cover,
+                                    ),
+                                    Container(
+                                      color: Colors.black.withOpacity(0.5),
+                                    )
+                                  ],
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(
-                        // color: Colors.yellow,
-                        height: MediaQuery.of(context).size.height * 0.55,
-                        width: double.maxFinite,
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20, right: 15, left: 15, bottom: 10),
-                    child: Column(
-                      children: [
-                        const Align(
-                          alignment: Alignment.topCenter,
-                          child: Text(
-                            'Profile',
-                            style: TextStyle(color: whiteColor, fontSize: 30, fontWeight: FontWeight.bold),
-                          ),
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.172),
-                        CircleAvatar(
-                          radius: 75,
-                          backgroundColor: whiteColor,
-                          child: CircleAvatar(
-                            radius: 70,
-                            // backgroundImage: NetworkImage(emptyImageString),
-
-                            backgroundImage: NetworkImage(pic.isEmpty ? emptyImageString : pic),
-                          ),
-                        ),
-                        SizedBox(height: MediaQuery.of(context).size.height * 0.01),
-                        Text(
-                          name,
-                          style: const TextStyle(color: whiteColor, fontSize: 24, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          detail,
-                          style: TextStyle(color: grey, fontSize: 16, fontWeight: FontWeight.bold),
-                        ),
-                        Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              ListTileWidget(
-                                name: name,
-                                title: 'Name',
-                              ),
-                              const Divider(height: 2),
-                              ListTileWidget(
-                                name: email,
-                                title: 'Email',
-                              ),
-                              const Divider(height: 2),
-                              ListTileWidget(
-                                name: age.toString(),
-                                title: 'Age',
+                              Padding(
+                                padding:
+                                    const EdgeInsets.only(right: 5, bottom: 7),
+                                child: Align(
+                                  alignment: Alignment.bottomRight,
+                                  child: IconButton(
+                                    icon: const Icon(
+                                      Icons.camera,
+                                      size: 35,
+                                    ),
+                                    onPressed: () {
+                                      // getImage();
+                                      _bottomSheetWidget();
+                                    },
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                        )
+                        ),
+                        SizedBox(
+                          // color: Colors.yellow,
+                          height: MediaQuery.of(context).size.height * 0.55,
+                          width: double.maxFinite,
+                        ),
                       ],
                     ),
-                  ),
-                ],
-              )
-            : const CreateProfile());
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 20, right: 15, left: 15, bottom: 10),
+                      child: Column(
+                        children: [
+                          const Align(
+                            alignment: Alignment.topCenter,
+                            child: Text(
+                              'Profile',
+                              style: TextStyle(
+                                  color: whiteColor,
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.172),
+                          CircleAvatar(
+                            radius: 75,
+                            backgroundColor: whiteColor,
+                            child: CircleAvatar(
+                              radius: 70,
+                              // backgroundImage: NetworkImage(emptyImageString),
+
+                              backgroundImage: NetworkImage(
+                                  pic.isEmpty ? emptyImageString : pic),
+                            ),
+                          ),
+                          SizedBox(
+                              height:
+                                  MediaQuery.of(context).size.height * 0.01),
+                          Text(
+                            name,
+                            style: const TextStyle(
+                                color: whiteColor,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Text(
+                            detail,
+                            style: TextStyle(
+                                color: grey,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                ListTileWidget(
+                                  name: name,
+                                  title: 'Name',
+                                ),
+                                const Divider(height: 2),
+                                ListTileWidget(
+                                  name: email,
+                                  title: 'Email',
+                                ),
+                                const Divider(height: 2),
+                                ListTileWidget(
+                                  name: age.toString(),
+                                  title: 'Age',
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              : const CreateProfile(),
+    );
   }
 
   void _bottomSheetWidget() {
@@ -235,7 +276,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: <Widget>[
             Text(
               "Pick an Image",
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: grey),
+              style: TextStyle(
+                  fontWeight: FontWeight.w600, fontSize: 22, color: grey),
             ),
             ListTile(
               leading: const Icon(Icons.camera),
@@ -275,7 +317,8 @@ class ListTileWidget extends StatelessWidget {
     return ListTile(
       title: Text(
         title,
-        style: const TextStyle(color: voiletColor, fontWeight: FontWeight.w600, fontSize: 16),
+        style: const TextStyle(
+            color: voiletColor, fontWeight: FontWeight.w600, fontSize: 16),
       ),
       subtitle: Text(
         name,
