@@ -48,6 +48,7 @@ dependencies:
   uuid: ^3.0.6
   firebase_database: ^9.0.18
   image_cropper: ^2.0.3
+  photofilters: ^3.0.1
 
 dev_dependencies:
   flutter_test:

@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:buffer/helper/utils.dart';
 import 'package:buffer/widgets/custom_text_field.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
@@ -9,6 +10,9 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
+
+import '../helper/constants.dart';
+import 'filter_image.dart';
 
 class PostScreen extends StatefulWidget {
   const PostScreen({Key? key}) : super(key: key);
@@ -22,41 +26,41 @@ class _PostScreenState extends State<PostScreen> {
   TextEditingController descriptionController = TextEditingController();
   File? postPic;
 
-  getPostToFirebase(File image) async {
-    String title = titleController.text.trim();
-    String description = descriptionController.text.trim();
-
-    titleController.clear();
-    descriptionController.clear();
-
-    if (title != "" && description != "") {
-      UploadTask uploadTask = FirebaseStorage.instance.ref().child("postImage").child(Uuid().v1()).putFile(image);
-
-      TaskSnapshot taskSnapshot = await uploadTask;
-      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-      var postMap = new Map();
-      postMap['title'] = title;
-      postMap['description'] = description;
-      postMap['Image'] = downloadUrl;
-      FirebaseDatabase.instance.ref("post").child(FirebaseAuth.instance.currentUser!.uid).set(postMap);
-      log(" updated");
-    } else {
-      log("Not updated");
-    }
-
-    setState(() {
-      postPic = null;
-    });
-  }
+  // getPostToFirebase(File image) async {
+  //   String title = titleController.text.trim();
+  //   String description = descriptionController.text.trim();
+  //
+  //   titleController.clear();
+  //   descriptionController.clear();
+  //
+  //   if (title != "" && description != "") {
+  //     UploadTask uploadTask = FirebaseStorage.instance.ref().child("postImage").child(Uuid().v1()).putFile(image);
+  //
+  //     TaskSnapshot taskSnapshot = await uploadTask;
+  //     String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+  //     var postMap = new Map();
+  //     postMap['title'] = title;
+  //     postMap['description'] = description;
+  //     postMap['Image'] = downloadUrl;
+  //     FirebaseDatabase.instance.ref("post").child(FirebaseAuth.instance.currentUser!.uid).set(postMap);
+  //     log(" updated");
+  //   } else {
+  //     log("Not updated");
+  //   }
+  //
+  //   setState(() {
+  //     postPic = null;
+  //   });
+  // }
 
   getCropImage(XFile? image) async {
     if (image != null) {
       final cropImage = await ImageCropper().cropImage(sourcePath: image.path, compressQuality: 50);
       if (cropImage != null) {
-        postPic = File(cropImage.path);
         setState(() {
-          getPostToFirebase(postPic!);
-          log("given to editPhoto");
+          postPic = File(cropImage.path);
+          // getPostToFirebase(postPic!);
+          log("postpic get the image to display");
         });
       }
     } else {
@@ -69,9 +73,8 @@ class _PostScreenState extends State<PostScreen> {
       source: source,
     );
 
-    getCropImage(selectedImage!);
-
     if (selectedImage != null) {
+      getCropImage(selectedImage);
       log("Image selected!");
     } else {
       log("No image selected!");
@@ -90,20 +93,46 @@ class _PostScreenState extends State<PostScreen> {
           padding: const EdgeInsets.only(top: 30, right: 10, left: 10),
           child: Column(
             children: [
-              GestureDetector(
-                onTap: () {
-                  getImage(ImageSource.camera);
-                },
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.3,
-                    child: Image.network(
-                      "https://designshack.net/wp-content/uploads/placeholder-image.png",
-                      fit: BoxFit.cover,
-                      height: double.maxFinite,
-                      width: double.maxFinite,
-                    ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: GestureDetector(
+                  onTap: () => _bottomSheetWidget(),
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: MediaQuery.of(context).size.height * 0.3,
+                        width: double.infinity,
+                        decoration: postPic != null
+                            ? BoxDecoration(image: DecorationImage(fit: BoxFit.cover, image: FileImage(postPic!)))
+                            : const BoxDecoration(
+                                image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: NetworkImage(
+                                    "https://designshack.net/wp-content/uploads/placeholder-image.png",
+                                  ),
+                                ),
+                              ),
+                      ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: IconButton(
+                          icon: const Icon(Icons.filter),
+                          onPressed: () {
+                            postPic != null
+                                ? Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) {
+                                        return FilterImage(
+                                          postPic: postPic!,
+                                        );
+                                      },
+                                    ),
+                                  )
+                                : Utils.showSnackBar("Select an Image");
+                          },
+                        ),
+                      )
+                    ],
                   ),
                 ),
               ),
@@ -164,10 +193,53 @@ class _PostScreenState extends State<PostScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.share),
+          child: const Icon(Icons.share),
           onPressed: () {
-            getPostToFirebase(postPic!);
+            // getPostToFirebase(postPic!);
           }),
+    );
+  }
+
+  void _bottomSheetWidget() {
+    showModalBottomSheet(
+      enableDrag: false,
+      isDismissible: false,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+      ),
+      context: context,
+      builder: (context) => Padding(
+        padding: const EdgeInsets.only(top: 10),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              "Pick an Image",
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: grey),
+            ),
+            ListTile(
+              leading: const Icon(Icons.camera),
+              title: Text('Camera'),
+              onTap: () {
+                getImage(ImageSource.camera);
+                Navigator.of(context).pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.browse_gallery),
+              title: Text('Gallery'),
+              onTap: () {
+                getImage(ImageSource.gallery);
+                Navigator.of(context).pop(context);
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
