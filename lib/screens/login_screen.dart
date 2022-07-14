@@ -49,6 +49,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     CustomTextField(
+                      maxLines: 1,
                       validator: (value) => EmailValidator.validate(value!) ? null : "Please enter a valid email",
                       textEditingController: _emailController,
                       textInputType: TextInputType.emailAddress,
@@ -56,6 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       icon: const Icon(Icons.email),
                     ),
                     CustomTextField(
+                      maxLines: 1,
                       validator: (value) => value != null && value.length < 8 ? 'Enter min. 8 characters' : null,
                       textEditingController: _passwordController,
                       textInputType: TextInputType.visiblePassword,
