@@ -1,16 +1,10 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:buffer/helper/utils.dart';
 import 'package:buffer/widgets/custom_text_field.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:uuid/uuid.dart';
-
 import '../helper/constants.dart';
 import 'filter_image.dart';
 
@@ -26,40 +20,12 @@ class _PostScreenState extends State<PostScreen> {
   TextEditingController descriptionController = TextEditingController();
   File? postPic;
 
-  // getPostToFirebase(File image) async {
-  //   String title = titleController.text.trim();
-  //   String description = descriptionController.text.trim();
-  //
-  //   titleController.clear();
-  //   descriptionController.clear();
-  //
-  //   if (title != "" && description != "") {
-  //     UploadTask uploadTask = FirebaseStorage.instance.ref().child("postImage").child(Uuid().v1()).putFile(image);
-  //
-  //     TaskSnapshot taskSnapshot = await uploadTask;
-  //     String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-  //     var postMap = new Map();
-  //     postMap['title'] = title;
-  //     postMap['description'] = description;
-  //     postMap['Image'] = downloadUrl;
-  //     FirebaseDatabase.instance.ref("post").child(FirebaseAuth.instance.currentUser!.uid).set(postMap);
-  //     log(" updated");
-  //   } else {
-  //     log("Not updated");
-  //   }
-  //
-  //   setState(() {
-  //     postPic = null;
-  //   });
-  // }
-
   getCropImage(XFile? image) async {
     if (image != null) {
       final cropImage = await ImageCropper().cropImage(sourcePath: image.path, compressQuality: 50);
       if (cropImage != null) {
         setState(() {
           postPic = File(cropImage.path);
-          // getPostToFirebase(postPic!);
           log("postpic get the image to display");
         });
       }
@@ -174,18 +140,33 @@ class _PostScreenState extends State<PostScreen> {
                     chipName: 'Pinterest',
                     color: Colors.red,
                   ),
-                  FilterChipWidget(
-                    chipName: 'TikTok',
-                    color: Colors.grey,
-                  ),
-                  FilterChipWidget(
-                    chipName: 'Instagram',
-                    color: Colors.purple,
-                  ),
-                  FilterChipWidget(
-                    chipName: 'SnapChat',
-                    color: Colors.yellow,
-                  ),
+                  // FilterChipWidget(
+                  //   chipName: 'TikTok',
+                  //   color: Colors.grey,
+                  //   onTap: () {
+                  //     setState(() {
+                  //       isPicked != isPicked;
+                  //     });
+                  //   },
+                  // ),
+                  // FilterChipWidget(
+                  //   chipName: 'Instagram',
+                  //   color: Colors.purple,
+                  //   onTap: () {
+                  //     setState(() {
+                  //       isPicked != isPicked;
+                  //     });
+                  //   },
+                  // ),
+                  // FilterChipWidget(
+                  //   chipName: 'SnapChat',
+                  //   color: Colors.yellow,
+                  //   onTap: () {
+                  //     setState(() {
+                  //       isPicked != isPicked;
+                  //     });
+                  //   },
+                  // ),
                 ]),
               )
             ],
@@ -195,7 +176,12 @@ class _PostScreenState extends State<PostScreen> {
       floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.share),
           onPressed: () {
-            // getPostToFirebase(postPic!);
+            setState(() {
+              if (FilterChipWidget().checker == true) {
+                print('Go to Page');
+              } else
+                print("stay on page");
+            });
           }),
     );
   }
@@ -245,10 +231,14 @@ class _PostScreenState extends State<PostScreen> {
 }
 
 class FilterChipWidget extends StatefulWidget {
-  final Color color;
-  final String chipName;
-
-  FilterChipWidget({required this.chipName, required this.color});
+  final Color? color;
+  final String? chipName;
+  final bool? checker;
+  FilterChipWidget({
+    this.chipName,
+    this.color,
+    this.checker,
+  });
 
   @override
   _FilterChipWidgetState createState() => _FilterChipWidgetState();
@@ -262,7 +252,7 @@ class _FilterChipWidgetState extends State<FilterChipWidget> {
     return FilterChip(
       label: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 3),
-        child: Text(widget.chipName),
+        child: Text(widget.chipName!),
       ),
       labelStyle: const TextStyle(
         color: Colors.white,
@@ -273,10 +263,16 @@ class _FilterChipWidgetState extends State<FilterChipWidget> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30.0),
       ),
-      backgroundColor: widget.color.withOpacity(0.50),
+      backgroundColor: widget.color!.withOpacity(0.50),
       onSelected: (isSelected) {
         setState(() {
           _isSelected = isSelected;
+          if (_isSelected == true) {
+            widget.checker == true;
+            print("checker true");
+          } else
+            print("checker false");
+          widget.checker == false;
         });
       },
       // selectedColor: Color(0xffeadffd),
