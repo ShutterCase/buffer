@@ -23,10 +23,11 @@ class CustomTextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final inputBorder = OutlineInputBorder(borderSide: Divider.createBorderSide(context));
+    final inputBorder =
+        OutlineInputBorder(borderSide: Divider.createBorderSide(context));
 
     return TextFormField(
-      maxLines: maxLines,
+      maxLines: maxLines ?? 1,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: validator,
       controller: textEditingController,
