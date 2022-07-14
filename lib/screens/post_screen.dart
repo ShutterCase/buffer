@@ -20,13 +20,20 @@ class _PostScreenState extends State<PostScreen> {
   TextEditingController descriptionController = TextEditingController();
   File? postPic;
 
+  bool _isSelected1 = false;
+  bool _isSelected2 = false;
+  bool _isSelected3 = false;
+  bool _isSelected4 = false;
+  bool _isSelected5 = false;
+
   getCropImage(XFile? image) async {
     if (image != null) {
-      final cropImage = await ImageCropper().cropImage(sourcePath: image.path, compressQuality: 50);
+      final cropImage = await ImageCropper()
+          .cropImage(sourcePath: image.path, compressQuality: 50);
       if (cropImage != null) {
         setState(() {
           postPic = File(cropImage.path);
-          log("postpic get the image to display");
+          log("postPic get the image to display");
         });
       }
     } else {
@@ -69,7 +76,10 @@ class _PostScreenState extends State<PostScreen> {
                         height: MediaQuery.of(context).size.height * 0.3,
                         width: double.infinity,
                         decoration: postPic != null
-                            ? BoxDecoration(image: DecorationImage(fit: BoxFit.cover, image: FileImage(postPic!)))
+                            ? BoxDecoration(
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: FileImage(postPic!)))
                             : const BoxDecoration(
                                 image: DecorationImage(
                                   fit: BoxFit.cover,
@@ -112,12 +122,17 @@ class _PostScreenState extends State<PostScreen> {
                   children: [
                     const Text(
                       "Title",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                     ),
-                    CustomTextField(textEditingController: titleController, textInputType: TextInputType.name, hintText: 'Title'),
+                    CustomTextField(
+                        textEditingController: titleController,
+                        textInputType: TextInputType.name,
+                        hintText: 'Title'),
                     const Text(
                       "Description",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                     ),
                     CustomTextField(
                       textEditingController: descriptionController,
@@ -132,41 +147,116 @@ class _PostScreenState extends State<PostScreen> {
                 height: MediaQuery.of(context).size.height * 0.30,
                 width: double.infinity,
                 child: Wrap(runSpacing: 0.5, spacing: 10, children: [
-                  FilterChipWidget(
-                    chipName: 'FaceBook',
-                    color: Colors.blue,
+                  FilterChip(
+                    label: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 3),
+                      child: Text("Facebook"),
+                    ),
+                    labelStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    selected: _isSelected1,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    backgroundColor: Colors.blue.withOpacity(0.50),
+                    onSelected: (isSelected) {
+                      setState(() {
+                        _isSelected1 = isSelected;
+                      });
+                    },
+                    selectedColor: Colors.blue,
                   ),
-                  FilterChipWidget(
-                    chipName: 'Pinterest',
-                    color: Colors.red,
+                  FilterChip(
+                    label: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 3),
+                      child: Text("Instagram"),
+                    ),
+                    labelStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    selected: _isSelected2,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    backgroundColor: Colors.pink.withOpacity(0.50),
+                    onSelected: (isSelected) {
+                      setState(() {
+                        _isSelected2 = isSelected;
+                      });
+                    },
+                    selectedColor: Colors.pink,
                   ),
-                  // FilterChipWidget(
-                  //   chipName: 'TikTok',
-                  //   color: Colors.grey,
-                  //   onTap: () {
-                  //     setState(() {
-                  //       isPicked != isPicked;
-                  //     });
-                  //   },
-                  // ),
-                  // FilterChipWidget(
-                  //   chipName: 'Instagram',
-                  //   color: Colors.purple,
-                  //   onTap: () {
-                  //     setState(() {
-                  //       isPicked != isPicked;
-                  //     });
-                  //   },
-                  // ),
-                  // FilterChipWidget(
-                  //   chipName: 'SnapChat',
-                  //   color: Colors.yellow,
-                  //   onTap: () {
-                  //     setState(() {
-                  //       isPicked != isPicked;
-                  //     });
-                  //   },
-                  // ),
+                  FilterChip(
+                    label: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 3),
+                      child: Text("Whatsapp"),
+                    ),
+                    labelStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    selected: _isSelected3,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    backgroundColor: Colors.green.withOpacity(0.50),
+                    onSelected: (isSelected) {
+                      setState(() {
+                        _isSelected3 = isSelected;
+                      });
+                    },
+                    selectedColor: Colors.green,
+                  ),
+                  FilterChip(
+                    label: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 3),
+                      child: Text("Reddit"),
+                    ),
+                    labelStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    selected: _isSelected4,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    backgroundColor: Colors.orange.withOpacity(0.50),
+                    onSelected: (isSelected) {
+                      setState(() {
+                        _isSelected4 = isSelected;
+                      });
+                    },
+                    selectedColor: Colors.orange,
+                  ),
+                  FilterChip(
+                    label: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 3),
+                      child: Text("Pinterest"),
+                    ),
+                    labelStyle: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    selected: _isSelected5,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0),
+                    ),
+                    backgroundColor: Colors.red.withOpacity(0.50),
+                    onSelected: (isSelected) {
+                      setState(() {
+                        _isSelected5 = isSelected;
+                      });
+                    },
+                    selectedColor: Colors.red,
+                  ),
                 ]),
               )
             ],
@@ -177,10 +267,15 @@ class _PostScreenState extends State<PostScreen> {
           child: const Icon(Icons.share),
           onPressed: () {
             setState(() {
-              if (FilterChipWidget().checker == true) {
-                print('Go to Page');
-              } else
-                print("stay on page");
+              if (_isSelected1 ||
+                  _isSelected2 ||
+                  _isSelected3 ||
+                  _isSelected4 ||
+                  _isSelected5 == true) {
+                log('Perform Task');
+              } else {
+                log("Something Missing");
+              }
             });
           }),
     );
@@ -205,11 +300,12 @@ class _PostScreenState extends State<PostScreen> {
           children: <Widget>[
             Text(
               "Pick an Image",
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: grey),
+              style: TextStyle(
+                  fontWeight: FontWeight.w600, fontSize: 22, color: grey),
             ),
             ListTile(
               leading: const Icon(Icons.camera),
-              title: Text('Camera'),
+              title: const Text('Camera'),
               onTap: () {
                 getImage(ImageSource.camera);
                 Navigator.of(context).pop(context);
@@ -217,7 +313,7 @@ class _PostScreenState extends State<PostScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.browse_gallery),
-              title: Text('Gallery'),
+              title: const Text('Gallery'),
               onTap: () {
                 getImage(ImageSource.gallery);
                 Navigator.of(context).pop(context);
@@ -230,53 +326,49 @@ class _PostScreenState extends State<PostScreen> {
   }
 }
 
-class FilterChipWidget extends StatefulWidget {
-  final Color? color;
-  final String? chipName;
-  final bool? checker;
-  FilterChipWidget({
-    this.chipName,
-    this.color,
-    this.checker,
-  });
-
-  @override
-  _FilterChipWidgetState createState() => _FilterChipWidgetState();
-}
-
-class _FilterChipWidgetState extends State<FilterChipWidget> {
-  var _isSelected = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return FilterChip(
-      label: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 3),
-        child: Text(widget.chipName!),
-      ),
-      labelStyle: const TextStyle(
-        color: Colors.white,
-        fontSize: 16.0,
-        fontWeight: FontWeight.w400,
-      ),
-      selected: _isSelected,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(30.0),
-      ),
-      backgroundColor: widget.color!.withOpacity(0.50),
-      onSelected: (isSelected) {
-        setState(() {
-          _isSelected = isSelected;
-          if (_isSelected == true) {
-            widget.checker == true;
-            print("checker true");
-          } else
-            print("checker false");
-          widget.checker == false;
-        });
-      },
-      // selectedColor: Color(0xffeadffd),
-      selectedColor: widget.color,
-    );
-  }
-}
+// class FilterChipWidget extends StatefulWidget {
+//   final Color? color;
+//   final String? chipName;
+//   bool isSelected;
+//   FilterChipWidget({
+//     this.chipName,
+//     this.color,
+//     this.isSelected = false,
+//   });
+//
+//   @override
+//   _FilterChipWidgetState createState() => _FilterChipWidgetState();
+// }
+//
+// class _FilterChipWidgetState extends State<FilterChipWidget> {
+//   @override
+//   Widget build(BuildContext context) {
+//     return FilterChip(
+//       label: Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 3),
+//         child: Text(widget.chipName!),
+//       ),
+//       labelStyle: const TextStyle(
+//         color: Colors.white,
+//         fontSize: 16.0,
+//         fontWeight: FontWeight.w400,
+//       ),
+//       selected: widget.isSelected,
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.circular(30.0),
+//       ),
+//       backgroundColor: widget.color!.withOpacity(0.50),
+//       onSelected: (isSelected) {
+//         setState(() {
+//           widget.isSelected = isSelected;
+//           if (widget.isSelected == true) {
+//             print("checker true");
+//           } else
+//             print("checker false");
+//         });
+//       },
+//       // selectedColor: Color(0xffeadffd),
+//       selectedColor: widget.color,
+//     );
+//   }
+// }
