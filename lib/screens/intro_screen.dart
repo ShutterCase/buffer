@@ -21,6 +21,7 @@ class _IntroScreenState extends State<IntroScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: Stack(
         children: [
           SizedBox(
@@ -47,7 +48,11 @@ class _IntroScreenState extends State<IntroScreen> {
               child: SmoothPageIndicator(
                 controller: controller,
                 count: 4,
-                effect: const SlideEffect(radius: 5.0, strokeWidth: 1.5, dotColor: Colors.white, activeDotColor: Colors.indigo),
+                effect: const SlideEffect(
+                    radius: 5.0,
+                    strokeWidth: 1.5,
+                    dotColor: Colors.white,
+                    activeDotColor: Colors.indigo),
               ),
             ),
           ),
@@ -56,12 +61,16 @@ class _IntroScreenState extends State<IntroScreen> {
       bottomSheet: Container(
         padding: const EdgeInsets.symmetric(horizontal: 5),
         height: MediaQuery.of(context).size.height * 0.20,
+        color: Colors.black,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             ElevatedButton(
-              style: ElevatedButton.styleFrom(minimumSize: const Size.fromHeight(50), elevation: 0, primary: voiletColor),
+              style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(50),
+                  elevation: 0,
+                  primary: voiletColor),
 
               onPressed: () {
                 Navigator.pushNamed(context, '/signUpScreen');
