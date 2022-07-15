@@ -2,14 +2,18 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:buffer/helper/constants.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
+
+import 'custom_text_field.dart';
 
 class CreateProfile extends StatefulWidget {
   const CreateProfile({Key? key}) : super(key: key);
@@ -104,70 +108,108 @@ class _CreateProfileState extends State<CreateProfile> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: Center(
-        child: SingleChildScrollView(
-          reverse: true,
-          child: Column(
-            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              CupertinoButton(
-                onPressed: () {
-                  _bottomSheetWidget();
-                },
-                child: CircleAvatar(
-                  radius: 53,
-                  backgroundColor: whiteColor,
-                  child: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: (profilepic != null) ? FileImage(profilepic!) : null,
-                    backgroundColor: Colors.grey,
+    return Center(
+      child: SingleChildScrollView(
+        // reverse: true,
+        child: Column(
+          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              height: MediaQuery.of(context).size.height * 0.35,
+              width: double.maxFinite,
+              color: Colors.black,
+              child: Stack(
+                children: [
+                  Image.asset(
+                    'assets/png.png',
+                    height: MediaQuery.of(context).size.height * 0.25,
+                    width: double.maxFinite,
+                    fit: BoxFit.cover,
                   ),
-                ),
+                  Align(
+                    alignment: Alignment.bottomCenter,
+                    child: CupertinoButton(
+                      onPressed: () {
+                        _bottomSheetWidget();
+                      },
+                      child: CircleAvatar(
+                          radius: 60,
+                          backgroundColor: whiteColor,
+                          child: (profilepic != null)
+                              ? CircleAvatar(
+                                  radius: 55,
+                                  backgroundImage: FileImage(profilepic!),
+                                  backgroundColor: Colors.grey,
+                                )
+                              : const CircleAvatar(
+                                  radius: 55,
+                                  backgroundImage: AssetImage('assets/img_avatar.png'),
+                                  backgroundColor: Colors.grey,
+                                )),
+                    ),
+                  ),
+                ],
               ),
-              textField(
-                hintText: 'Name',
-                controller: nameController,
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              height: MediaQuery.of(context).size.height * 0.45,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  CustomTextField(
+                    validator: (value) => EmailValidator.validate(value!) ? null : "Please enter a valid email",
+                    textEditingController: nameController,
+                    textInputType: TextInputType.emailAddress,
+                    hintText: 'Name',
+                    // icon: const Icon(Icons.email),
+                  ),
+                  CustomTextField(
+                    validator: (value) => EmailValidator.validate(value!) ? null : "Please enter a valid email",
+                    textEditingController: emailController,
+                    textInputType: TextInputType.emailAddress,
+                    hintText: 'E-mail',
+                    // icon: const Icon(Icons.email),
+                  ),
+                  CustomTextField(
+                    validator: (value) => EmailValidator.validate(value!) ? null : "Please enter a valid email",
+                    textEditingController: ageController,
+                    textInputType: TextInputType.emailAddress,
+                    hintText: 'Age',
+                    // icon: const Icon(Icons.email),
+                  ),
+                  CustomTextField(
+                    validator: (value) => EmailValidator.validate(value!) ? null : "Please enter a valid email",
+                    textEditingController: detailController,
+                    textInputType: TextInputType.emailAddress,
+                    hintText: 'Detail',
+                    // icon: const Icon(Icons.email),
+                  ),
+                ],
               ),
-              SizedBox(height: MediaQuery.of(context).size.width * 0.07),
-              textField(
-                hintText: 'Email',
-                controller: emailController,
-              ),
-              SizedBox(height: MediaQuery.of(context).size.width * 0.07),
-              textField(
-                hintText: 'Age',
-                controller: ageController,
-              ),
-              SizedBox(height: MediaQuery.of(context).size.width * 0.07),
-              textField(
-                hintText: 'Detail',
-                controller: detailController,
-              ),
-              SizedBox(height: MediaQuery.of(context).size.width * 0.07),
-              SizedBox(
-                height: 50,
-                width: double.infinity,
-                child: RaisedButton(
-                  onPressed: () {
-                    saveUser(profilepic!);
-                  },
-                  color: voiletColor,
-                  child: const Center(
-                    child: Text(
-                      "Update",
-                      style: TextStyle(
-                        fontSize: 23,
-                        color: Colors.white,
-                      ),
+            ),
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 10),
+              height: 50,
+              width: double.infinity,
+              child: RaisedButton(
+                onPressed: () {
+                  saveUser(profilepic!);
+                },
+                color: voiletColor,
+                child: const Center(
+                  child: Text(
+                    "Update",
+                    style: TextStyle(
+                      fontSize: 23,
+                      color: Colors.white,
                     ),
                   ),
                 ),
-              )
-            ],
-          ),
+              ),
+            ),
+          ],
         ),
       ),
     );
@@ -218,14 +260,16 @@ class _CreateProfileState extends State<CreateProfile> {
 }
 
 Widget textField({required hintText, required TextEditingController controller}) {
-  return Material(
-    shadowColor: Colors.grey,
-    shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: TextField(
-      controller: controller,
-      decoration: InputDecoration(
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: 10),
+    child: Material(
+      shadowColor: Colors.grey,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: TextField(
+        controller: controller,
+        decoration: InputDecoration(
           hintText: hintText,
           hintStyle: const TextStyle(
             letterSpacing: 2,
@@ -234,7 +278,9 @@ Widget textField({required hintText, required TextEditingController controller})
           ),
           fillColor: Colors.white30,
           filled: true,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide.none)),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0), borderSide: BorderSide.none),
+        ),
+      ),
     ),
   );
 }

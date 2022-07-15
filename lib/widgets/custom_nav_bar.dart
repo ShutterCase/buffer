@@ -14,7 +14,7 @@ class CustomNavigationBar extends StatefulWidget {
 }
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
-  int currentIndex = 2;
+  int currentIndex = 3;
   final screens = [
     const HomeScreen(),
     const SecondScreen(),
