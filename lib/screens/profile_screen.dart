@@ -137,13 +137,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                       fit: BoxFit.cover,
                                     ),
                                     Container(
+                                      height: double.maxFinite,
+                                      width: double.maxFinite,
                                       color: Colors.black.withOpacity(0.5),
                                     )
                                   ],
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.only(right: 5, bottom: 7),
+                                padding: const EdgeInsets.only(right: 7, bottom: 10),
                                 child: Align(
                                   alignment: Alignment.bottomRight,
                                   child: IconButton(
@@ -207,12 +209,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   name: name,
                                   title: 'Name',
                                 ),
-                                const Divider(height: 2),
+                                const Divider(
+                                  height: 3,
+                                  color: voiletColor,
+                                ),
                                 ListTileWidget(
                                   name: email,
                                   title: 'Email',
                                 ),
-                                const Divider(height: 2),
+                                const Divider(
+                                  height: 3,
+                                  color: voiletColor,
+                                ),
                                 ListTileWidget(
                                   name: age.toString(),
                                   title: 'Age',
@@ -285,16 +293,22 @@ class ListTileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(
-        title,
-        style: const TextStyle(color: voiletColor, fontWeight: FontWeight.w600, fontSize: 16),
+    return SizedBox(
+      height: MediaQuery.of(context).size.height * 0.10,
+      child: ListTile(
+        title: Padding(
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.005),
+          child: Text(
+            title,
+            style: const TextStyle(color: voiletColor, fontWeight: FontWeight.w600, fontSize: 20),
+          ),
+        ),
+        subtitle: Text(
+          name,
+          style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
+        ),
+        // contentPadding: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
       ),
-      subtitle: Text(
-        name,
-        style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 14),
-      ),
-      // contentPadding: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
     );
   }
 }
