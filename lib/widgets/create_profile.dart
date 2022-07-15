@@ -159,28 +159,25 @@ class _CreateProfileState extends State<CreateProfile> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   CustomTextField(
-                    validator: (value) => EmailValidator.validate(value!) ? null : "Please enter a valid email",
                     textEditingController: nameController,
                     textInputType: TextInputType.emailAddress,
                     hintText: 'Name',
                     // icon: const Icon(Icons.email),
                   ),
                   CustomTextField(
-                    validator: (value) => EmailValidator.validate(value!) ? null : "Please enter a valid email",
+                    // validator: (value) => EmailValidator.validate(value!) ? null : "Please enter a valid email",
                     textEditingController: emailController,
                     textInputType: TextInputType.emailAddress,
                     hintText: 'E-mail',
                     // icon: const Icon(Icons.email),
                   ),
                   CustomTextField(
-                    validator: (value) => EmailValidator.validate(value!) ? null : "Please enter a valid email",
                     textEditingController: ageController,
                     textInputType: TextInputType.emailAddress,
                     hintText: 'Age',
                     // icon: const Icon(Icons.email),
                   ),
                   CustomTextField(
-                    validator: (value) => EmailValidator.validate(value!) ? null : "Please enter a valid email",
                     textEditingController: detailController,
                     textInputType: TextInputType.emailAddress,
                     hintText: 'Detail',
