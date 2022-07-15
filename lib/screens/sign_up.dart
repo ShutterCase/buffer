@@ -9,6 +9,7 @@ import '../helper/constants.dart';
 import '../helper/utils.dart';
 import '../main.dart';
 import '../widgets/custom_text_field.dart';
+import '../widgets/loading_indicator.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({
@@ -130,7 +131,7 @@ class _SignUpScreen extends State<SignUpScreen> {
               InkWell(
                 onTap: () => Navigator.pushReplacementNamed(context, '/loginScreen'),
                 child: RichText(
-                  text: TextSpan(
+                  text: const TextSpan(
                     text: 'Don\'t have an account ?? ',
                     style: TextStyle(fontSize: 16, color: Colors.white),
                     children: <TextSpan>[
@@ -153,7 +154,7 @@ class _SignUpScreen extends State<SignUpScreen> {
     final isValid = formKey.currentState!.validate();
     if (!isValid) return;
 
-    showDialog(context: context, barrierDismissible: false, builder: (context) => const Center(child: CircularProgressIndicator()));
+    showDialog(context: context, barrierDismissible: false, builder: (context) => const Center(child: LoadingIndicatorWidget()));
     try {
       await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _emailController.text.trim(), password: _passwordController.text.trim());
     } on FirebaseAuthException catch (e) {

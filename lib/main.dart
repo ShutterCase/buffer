@@ -5,6 +5,7 @@ import 'package:buffer/screens/login_screen.dart';
 import 'package:buffer/screens/sign_up.dart';
 import 'package:buffer/screens/splash_screen.dart';
 import 'package:buffer/widgets/custom_nav_bar.dart';
+import 'package:buffer/widgets/loading_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(child: LoadingIndicatorWidget());
             } else if (snapshot.hasError) {
               return const Center(child: Text('Something Went Wrong'));
             } else if (snapshot.hasData) {

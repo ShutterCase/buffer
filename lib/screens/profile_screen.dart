@@ -31,11 +31,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   File? profilepic;
 
   void dataChanges() {
-    FirebaseDatabase.instance
-        .ref("users")
-        .child(FirebaseAuth.instance.currentUser!.uid)
-        .onValue
-        .listen((event) {
+    FirebaseDatabase.instance.ref("users").child(FirebaseAuth.instance.currentUser!.uid).onValue.listen((event) {
       if (!mounted) return;
       setState(() {
         isLoading = false;
@@ -66,25 +62,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void editPhotoUpload(File finalCroppedImage) async {
-    UploadTask uploadTask = FirebaseStorage.instance
-        .ref()
-        .child("profilepictures")
-        .child(Uuid().v1())
-        .putFile(finalCroppedImage);
+    UploadTask uploadTask = FirebaseStorage.instance.ref().child("profilepictures").child(Uuid().v1()).putFile(finalCroppedImage);
     log("run");
     TaskSnapshot taskSnapshot = await uploadTask;
     String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-    await FirebaseDatabase.instance
-        .ref("users")
-        .child(FirebaseAuth.instance.currentUser!.uid)
-        .update({"image": downloadUrl});
+    await FirebaseDatabase.instance.ref("users").child(FirebaseAuth.instance.currentUser!.uid).update({"image": downloadUrl});
     log("completed");
   }
 
   getCropImage(XFile? image) async {
     if (image != null) {
-      final cropImage = await ImageCropper()
-          .cropImage(sourcePath: image.path, compressQuality: 50);
+      final cropImage = await ImageCropper().cropImage(sourcePath: image.path, compressQuality: 50);
       if (cropImage != null) {
         File convertedFile = File(cropImage.path);
         setState(() {
@@ -125,7 +113,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: isLoading
-          ? LoadingIndicatorWidget()
+          ? const LoadingIndicatorWidget()
           : checker
               ? Stack(
                   children: [
@@ -155,8 +143,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ),
                               Padding(
-                                padding:
-                                    const EdgeInsets.only(right: 5, bottom: 7),
+                                padding: const EdgeInsets.only(right: 5, bottom: 7),
                                 child: Align(
                                   alignment: Alignment.bottomRight,
                                   child: IconButton(
@@ -182,23 +169,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ],
                     ),
                     Padding(
-                      padding: const EdgeInsets.only(
-                          top: 20, right: 15, left: 15, bottom: 10),
+                      padding: const EdgeInsets.only(top: 20, right: 15, left: 15, bottom: 10),
                       child: Column(
                         children: [
                           const Align(
                             alignment: Alignment.topCenter,
                             child: Text(
                               'Profile',
-                              style: TextStyle(
-                                  color: whiteColor,
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold),
+                              style: TextStyle(color: whiteColor, fontSize: 30, fontWeight: FontWeight.bold),
                             ),
                           ),
-                          SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.172),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.172),
                           CircleAvatar(
                             radius: 75,
                             backgroundColor: whiteColor,
@@ -206,26 +187,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               radius: 70,
                               // backgroundImage: NetworkImage(emptyImageString),
 
-                              backgroundImage: NetworkImage(
-                                  pic.isEmpty ? emptyImageString : pic),
+                              backgroundImage: NetworkImage(pic.isEmpty ? emptyImageString : pic),
                             ),
                           ),
-                          SizedBox(
-                              height:
-                                  MediaQuery.of(context).size.height * 0.01),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.01),
                           Text(
                             name,
-                            style: const TextStyle(
-                                color: whiteColor,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold),
+                            style: const TextStyle(color: whiteColor, fontSize: 24, fontWeight: FontWeight.bold),
                           ),
                           Text(
                             detail,
-                            style: TextStyle(
-                                color: grey,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold),
+                            style: TextStyle(color: grey, fontSize: 16, fontWeight: FontWeight.bold),
                           ),
                           Expanded(
                             child: Column(
@@ -276,12 +248,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
           children: <Widget>[
             Text(
               "Pick an Image",
-              style: TextStyle(
-                  fontWeight: FontWeight.w600, fontSize: 22, color: grey),
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: grey),
             ),
             ListTile(
               leading: const Icon(Icons.camera),
-              title: Text('Camera'),
+              title: const Text('Camera'),
               onTap: () {
                 getImage(ImageSource.camera);
                 Navigator.of(context).pop(context);
@@ -289,7 +260,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             ListTile(
               leading: const Icon(Icons.browse_gallery),
-              title: Text('Gallery'),
+              title: const Text('Gallery'),
               onTap: () {
                 getImage(ImageSource.gallery);
                 Navigator.of(context).pop(context);
@@ -317,8 +288,7 @@ class ListTileWidget extends StatelessWidget {
     return ListTile(
       title: Text(
         title,
-        style: const TextStyle(
-            color: voiletColor, fontWeight: FontWeight.w600, fontSize: 16),
+        style: const TextStyle(color: voiletColor, fontWeight: FontWeight.w600, fontSize: 16),
       ),
       subtitle: Text(
         name,

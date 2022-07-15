@@ -8,6 +8,7 @@ import '../helper/utils.dart';
 import '../helper/constants.dart';
 import '../main.dart';
 import '../widgets/custom_text_field.dart';
+import '../widgets/loading_indicator.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({
@@ -110,7 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future signIn() async {
-    showDialog(context: context, barrierDismissible: false, builder: (context) => const Center(child: CircularProgressIndicator()));
+    showDialog(context: context, barrierDismissible: false, builder: (context) => const Center(child: LoadingIndicatorWidget()));
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(email: _emailController.text.trim(), password: _passwordController.text.trim());
     } on FirebaseAuthException catch (e) {

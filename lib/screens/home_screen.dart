@@ -31,9 +31,9 @@ class _HomeScreenState extends State<HomeScreen> {
             )),
         actions: <Widget>[
           Padding(
-            padding: EdgeInsets.only(right: 12.0),
+            padding: const EdgeInsets.only(right: 12.0),
             child: IconButton(
-              icon: Icon(Icons.send),
+              icon: const Icon(Icons.send),
               color: whiteColor,
               onPressed: () {
                 FirebaseAuth.instance.signOut();
