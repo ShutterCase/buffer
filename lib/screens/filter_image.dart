@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class FilterImage extends StatefulWidget {
@@ -28,19 +27,23 @@ class _FilterImageState extends State<FilterImage> {
         padding: const EdgeInsets.only(top: 40, left: 10, right: 10),
         child: Column(
           children: [
-            ColorFiltered(
-              colorFilter: ColorFilter.mode(editColor, blendColor),
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.5,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: FileImage(widget.postPic),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: ColorFiltered(
+                colorFilter: ColorFilter.mode(editColor, blendColor),
+                child: Container(
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: FileImage(widget.postPic),
+                    ),
                   ),
                 ),
               ),
             ),
+            SizedBox(height: MediaQuery.of(context).size.height * 0.02),
             Expanded(
               child: ListView.builder(
                   scrollDirection: Axis.horizontal,
@@ -61,17 +64,21 @@ class _FilterImageState extends State<FilterImage> {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     image: DecorationImage(
-                                      image: FileImage(widget.postPic),
+                                      fit: BoxFit.cover,
+                                      image: FileImage(
+                                        widget.postPic,
+                                      ),
                                     ),
                                   ),
-                                  height: 100,
-                                  width: 100,
+                                  height: 80,
+                                  width: 80,
 
                                   // backgroundImage: FileImage(widget.postPic),
                                   // radius: 50,
                                 ),
                               ),
                             ),
+                            SizedBox(height: 20),
                             Text(imageFilterModel[index].title),
                           ],
                         ),

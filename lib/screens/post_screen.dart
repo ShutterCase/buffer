@@ -28,8 +28,7 @@ class _PostScreenState extends State<PostScreen> {
 
   getCropImage(XFile? image) async {
     if (image != null) {
-      final cropImage = await ImageCropper()
-          .cropImage(sourcePath: image.path, compressQuality: 50);
+      final cropImage = await ImageCropper().cropImage(sourcePath: image.path, compressQuality: 50);
       if (cropImage != null) {
         setState(() {
           postPic = File(cropImage.path);
@@ -61,36 +60,34 @@ class _PostScreenState extends State<PostScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.only(top: 30, right: 10, left: 10),
-          child: Column(
-            children: [
-              ClipRRect(
-                borderRadius: BorderRadius.circular(10),
-                child: GestureDetector(
-                  onTap: () => _bottomSheetWidget(),
-                  child: Stack(
-                    children: [
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.3,
-                        width: double.infinity,
-                        decoration: postPic != null
-                            ? BoxDecoration(
-                                image: DecorationImage(
-                                    fit: BoxFit.cover,
-                                    image: FileImage(postPic!)))
-                            : const BoxDecoration(
-                                image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(
-                                    "https://designshack.net/wp-content/uploads/placeholder-image.png",
-                                  ),
+      body: Container(
+        padding: const EdgeInsets.only(top: 30, right: 10, left: 10),
+        child: Column(
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: GestureDetector(
+                onTap: () => _bottomSheetWidget(),
+                child: Stack(
+                  children: [
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.3,
+                      width: double.infinity,
+                      decoration: postPic != null
+                          ? BoxDecoration(image: DecorationImage(fit: BoxFit.cover, image: FileImage(postPic!)))
+                          : const BoxDecoration(
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: NetworkImage(
+                                  "https://designshack.net/wp-content/uploads/placeholder-image.png",
                                 ),
                               ),
-                      ),
-                      Align(
-                        alignment: Alignment.bottomRight,
+                            ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * 0.22),
                         child: IconButton(
                           icon: const Icon(Icons.filter),
                           onPressed: () {
@@ -107,171 +104,158 @@ class _PostScreenState extends State<PostScreen> {
                                 : Utils.showSnackBar("Select an Image");
                           },
                         ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 15),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.35,
-                width: double.maxFinite,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      "Title",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                    ),
-                    CustomTextField(
-                        textEditingController: titleController,
-                        textInputType: TextInputType.name,
-                        hintText: 'Title'),
-                    const Text(
-                      "Description",
-                      style:
-                          TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-                    ),
-                    CustomTextField(
-                      textEditingController: descriptionController,
-                      textInputType: TextInputType.name,
-                      hintText: 'Add Your Bio',
-                      maxLines: 4,
-                    ),
+                      ),
+                    )
                   ],
                 ),
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.30,
-                width: double.infinity,
-                child: Wrap(runSpacing: 0.5, spacing: 10, children: [
-                  FilterChip(
-                    label: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 3),
-                      child: Text("Facebook"),
-                    ),
-                    labelStyle: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    selected: _isSelected1,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    backgroundColor: Colors.blue.withOpacity(0.50),
-                    onSelected: (isSelected) {
-                      setState(() {
-                        _isSelected1 = isSelected;
-                      });
-                    },
-                    selectedColor: Colors.blue,
+            ),
+            const SizedBox(height: 15),
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.35,
+              width: double.maxFinite,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Title",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                   ),
-                  FilterChip(
-                    label: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 3),
-                      child: Text("Instagram"),
-                    ),
-                    labelStyle: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    selected: _isSelected2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    backgroundColor: Colors.pink.withOpacity(0.50),
-                    onSelected: (isSelected) {
-                      setState(() {
-                        _isSelected2 = isSelected;
-                      });
-                    },
-                    selectedColor: Colors.pink,
+                  CustomTextField(textEditingController: titleController, textInputType: TextInputType.name, hintText: 'Title'),
+                  const Text(
+                    "Description",
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
                   ),
-                  FilterChip(
-                    label: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 3),
-                      child: Text("Whatsapp"),
-                    ),
-                    labelStyle: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    selected: _isSelected3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    backgroundColor: Colors.green.withOpacity(0.50),
-                    onSelected: (isSelected) {
-                      setState(() {
-                        _isSelected3 = isSelected;
-                      });
-                    },
-                    selectedColor: Colors.green,
+                  CustomTextField(
+                    textEditingController: descriptionController,
+                    textInputType: TextInputType.name,
+                    hintText: 'Add Your Bio',
+                    maxLines: 4,
                   ),
-                  FilterChip(
-                    label: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 3),
-                      child: Text("Reddit"),
-                    ),
-                    labelStyle: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    selected: _isSelected4,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    backgroundColor: Colors.orange.withOpacity(0.50),
-                    onSelected: (isSelected) {
-                      setState(() {
-                        _isSelected4 = isSelected;
-                      });
-                    },
-                    selectedColor: Colors.orange,
-                  ),
-                  FilterChip(
-                    label: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 3),
-                      child: Text("Pinterest"),
-                    ),
-                    labelStyle: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                    selected: _isSelected5,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30.0),
-                    ),
-                    backgroundColor: Colors.red.withOpacity(0.50),
-                    onSelected: (isSelected) {
-                      setState(() {
-                        _isSelected5 = isSelected;
-                      });
-                    },
-                    selectedColor: Colors.red,
-                  ),
-                ]),
-              )
-            ],
-          ),
+                ],
+              ),
+            ),
+            Wrap(runSpacing: 0.5, spacing: 10, children: [
+              FilterChip(
+                label: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 3),
+                  child: Text("Facebook"),
+                ),
+                labelStyle: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w400,
+                ),
+                selected: _isSelected1,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                backgroundColor: Colors.blue.withOpacity(0.50),
+                onSelected: (isSelected) {
+                  setState(() {
+                    _isSelected1 = isSelected;
+                  });
+                },
+                selectedColor: Colors.blue,
+              ),
+              FilterChip(
+                label: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 3),
+                  child: Text("Instagram"),
+                ),
+                labelStyle: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w400,
+                ),
+                selected: _isSelected2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                backgroundColor: Colors.pink.withOpacity(0.50),
+                onSelected: (isSelected) {
+                  setState(() {
+                    _isSelected2 = isSelected;
+                  });
+                },
+                selectedColor: Colors.pink,
+              ),
+              FilterChip(
+                label: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 3),
+                  child: Text("Whatsapp"),
+                ),
+                labelStyle: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w400,
+                ),
+                selected: _isSelected3,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                backgroundColor: Colors.green.withOpacity(0.50),
+                onSelected: (isSelected) {
+                  setState(() {
+                    _isSelected3 = isSelected;
+                  });
+                },
+                selectedColor: Colors.green,
+              ),
+              FilterChip(
+                label: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 3),
+                  child: Text("Reddit"),
+                ),
+                labelStyle: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w400,
+                ),
+                selected: _isSelected4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                backgroundColor: Colors.orange.withOpacity(0.50),
+                onSelected: (isSelected) {
+                  setState(() {
+                    _isSelected4 = isSelected;
+                  });
+                },
+                selectedColor: Colors.orange,
+              ),
+              FilterChip(
+                label: const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 3),
+                  child: Text("Pinterest"),
+                ),
+                labelStyle: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.w400,
+                ),
+                selected: _isSelected5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                backgroundColor: Colors.red.withOpacity(0.50),
+                onSelected: (isSelected) {
+                  setState(() {
+                    _isSelected5 = isSelected;
+                  });
+                },
+                selectedColor: Colors.red,
+              ),
+            ])
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.share),
           onPressed: () {
             setState(() {
-              if (_isSelected1 ||
-                  _isSelected2 ||
-                  _isSelected3 ||
-                  _isSelected4 ||
-                  _isSelected5 == true) {
+              if (_isSelected1 || _isSelected2 || _isSelected3 || _isSelected4 || _isSelected5 == true) {
                 log('Perform Task');
               } else {
                 log("Something Missing");
@@ -300,8 +284,7 @@ class _PostScreenState extends State<PostScreen> {
           children: <Widget>[
             Text(
               "Pick an Image",
-              style: TextStyle(
-                  fontWeight: FontWeight.w600, fontSize: 22, color: grey),
+              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: grey),
             ),
             ListTile(
               leading: const Icon(Icons.camera),
