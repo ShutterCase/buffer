@@ -1,14 +1,11 @@
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:buffer/helper/constants.dart';
-import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
@@ -48,7 +45,7 @@ class _CreateProfileState extends State<CreateProfile> {
 
       TaskSnapshot taskSnapshot = await uploadTask;
       String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-      var myMap = new Map();
+      var myMap = Map();
       myMap['name'] = name;
       myMap['email'] = email;
       myMap['age'] = age;
@@ -161,7 +158,7 @@ class _CreateProfileState extends State<CreateProfile> {
                   CustomTextField(
                     maxLines: 1,
                     textEditingController: nameController,
-                    textInputType: TextInputType.emailAddress,
+                    textInputType: TextInputType.name,
                     hintText: 'Name',
                   ),
                   CustomTextField(
@@ -174,21 +171,21 @@ class _CreateProfileState extends State<CreateProfile> {
                   CustomTextField(
                     maxLines: 1,
                     textEditingController: ageController,
-                    textInputType: TextInputType.emailAddress,
+                    textInputType: TextInputType.number,
                     hintText: 'Age',
                   ),
                   CustomTextField(
                     maxLines: 1,
                     textInputAction: TextInputAction.done,
                     textEditingController: detailController,
-                    textInputType: TextInputType.emailAddress,
+                    textInputType: TextInputType.text,
                     hintText: 'Detail',
                   ),
                 ],
               ),
             ),
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 10),
               height: 50,
               width: double.infinity,
               child: RaisedButton(
@@ -236,7 +233,7 @@ class _CreateProfileState extends State<CreateProfile> {
             ),
             ListTile(
               leading: const Icon(Icons.camera),
-              title: Text('Camera'),
+              title: const Text('Camera'),
               onTap: () {
                 getImage(ImageSource.camera);
                 Navigator.of(context).pop(context);
@@ -244,7 +241,7 @@ class _CreateProfileState extends State<CreateProfile> {
             ),
             ListTile(
               leading: const Icon(Icons.browse_gallery),
-              title: Text('Gallery'),
+              title: const Text('Gallery'),
               onTap: () {
                 getImage(ImageSource.gallery);
                 Navigator.of(context).pop(context);
@@ -259,7 +256,7 @@ class _CreateProfileState extends State<CreateProfile> {
 
 Widget textField({required hintText, required TextEditingController controller}) {
   return Padding(
-    padding: EdgeInsets.symmetric(horizontal: 10),
+    padding: const EdgeInsets.symmetric(horizontal: 10),
     child: Material(
       shadowColor: Colors.grey,
       shape: RoundedRectangleBorder(
