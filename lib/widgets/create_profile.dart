@@ -179,6 +179,7 @@ class _CreateProfileState extends State<CreateProfile> {
                   ),
                   CustomTextField(
                     maxLines: 1,
+                    textInputAction: TextInputAction.done,
                     textEditingController: detailController,
                     textInputType: TextInputType.emailAddress,
                     hintText: 'Detail',

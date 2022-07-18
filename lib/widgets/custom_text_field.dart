@@ -9,6 +9,7 @@ class CustomTextField extends StatelessWidget {
   final Widget? suffixicon;
   final int? maxLines;
   final FormFieldValidator<String?>? validator;
+  final TextInputAction? textInputAction;
   const CustomTextField({
     Key? key,
     required this.textEditingController,
@@ -19,18 +20,19 @@ class CustomTextField extends StatelessWidget {
     this.isPass = false,
     this.validator,
     this.maxLines,
+    this.textInputAction,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final inputBorder =
-        OutlineInputBorder(borderSide: Divider.createBorderSide(context));
+    final inputBorder = OutlineInputBorder(borderSide: Divider.createBorderSide(context));
 
     return TextFormField(
       maxLines: maxLines ?? 1,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       validator: validator,
       controller: textEditingController,
+      textInputAction: textInputAction ?? TextInputAction.next,
       decoration: InputDecoration(
         suffixIcon: suffixicon,
         prefixIcon: icon,

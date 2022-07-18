@@ -59,6 +59,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     CustomTextField(
                       maxLines: 1,
+                      textInputAction: TextInputAction.done,
                       validator: (value) => value != null && value.length < 8 ? 'Enter min. 8 characters' : null,
                       textEditingController: _passwordController,
                       textInputType: TextInputType.visiblePassword,

@@ -68,6 +68,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                       ),
                       CustomTextField(
                         maxLines: 1,
+                        textInputAction: TextInputAction.done,
                         validator: (value) => value != null && value.length < 8 ? 'Enter min. 8 characters' : null,
                         textEditingController: _passwordController,
                         textInputType: TextInputType.visiblePassword,
@@ -132,7 +133,7 @@ class _SignUpScreen extends State<SignUpScreen> {
                 onTap: () => Navigator.pushReplacementNamed(context, '/loginScreen'),
                 child: RichText(
                   text: const TextSpan(
-                    text: 'Don\'t have an account ?? ',
+                    text: 'Already have an account ?? ',
                     style: TextStyle(fontSize: 16, color: Colors.white),
                     children: <TextSpan>[
                       TextSpan(
