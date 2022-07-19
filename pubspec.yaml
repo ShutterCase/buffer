@@ -49,6 +49,8 @@ dependencies:
   firebase_database: ^9.0.18
   image_cropper: ^2.0.3
   photofilters: ^3.0.1
+  flutter_facebook_auth: ^4.4.0+1
+  twitter_login: ^4.2.3
 
 dev_dependencies:
   flutter_test:
