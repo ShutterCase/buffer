@@ -51,6 +51,7 @@ dependencies:
   photofilters: ^3.0.1
   flutter_facebook_auth: ^4.4.0+1
   twitter_login: ^4.2.3
+  linkedin_login: ^2.2.1
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,5 @@
 import 'package:buffer/helper/constants.dart';
+import 'package:buffer/linkdin_login.dart';
 import 'package:buffer/screens/secondScreen.dart';
 import 'package:flutter/material.dart';
 import '../fb_login.dart';
@@ -20,7 +21,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   int currentIndex = 1;
   final screens = [
     const HomeScreen(),
-    const FacebookLogin(),
+    const TestApp(),
     const PostScreen(),
     const ProfileScreen(),
   ];
