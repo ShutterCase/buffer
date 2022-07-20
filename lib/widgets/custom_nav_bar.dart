@@ -1,8 +1,11 @@
 import 'package:buffer/helper/constants.dart';
 import 'package:buffer/linkdin_login.dart';
+import 'package:buffer/reddit_login.dart';
 import 'package:buffer/screens/secondScreen.dart';
+import 'package:buffer/testing_api.dart';
 import 'package:flutter/material.dart';
 import '../fb_login.dart';
+import '../pinteret_login.dart';
 import '../screens/check_box_screen.dart';
 import '../screens/connect_screen.dart';
 import '../screens/home_screen.dart';
@@ -21,7 +24,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
   int currentIndex = 1;
   final screens = [
     const HomeScreen(),
-    const TestApp(),
+    const TestingAPI(),
     const PostScreen(),
     const ProfileScreen(),
   ];
