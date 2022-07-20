@@ -12,6 +12,7 @@ import '../screens/home_screen.dart';
 import '../screens/post_screen.dart';
 import '../screens/profile_screen.dart';
 import '../twitter_login.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 
 class CustomNavigationBar extends StatefulWidget {
   const CustomNavigationBar({Key? key}) : super(key: key);
@@ -21,10 +22,10 @@ class CustomNavigationBar extends StatefulWidget {
 }
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
-  int currentIndex = 1;
+  int currentIndex = 0;
   final screens = [
     const HomeScreen(),
-    const TestingAPI(),
+    const TestApp(),
     const PostScreen(),
     const ProfileScreen(),
   ];
@@ -35,39 +36,38 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
         index: currentIndex,
         children: screens,
       ),
-      bottomNavigationBar: SizedBox(
-        height: 60,
-        child: BottomNavigationBar(
-          currentIndex: currentIndex,
-          selectedItemColor: whiteColor,
-          iconSize: 24,
-          selectedFontSize: 12,
-          unselectedFontSize: 14,
-          showUnselectedLabels: false,
-          unselectedItemColor: Colors.grey,
-          onTap: (index) => setState(() => currentIndex = index),
-          items: const [
-            BottomNavigationBarItem(
-              label: 'Home',
-              icon: Icon(Icons.home),
-            ),
-            BottomNavigationBarItem(
-              label: 'gallery',
-              icon: Icon(Icons.browse_gallery),
-            ),
-            BottomNavigationBarItem(
-              label: 'checkbox',
-              icon: Icon(Icons.align_horizontal_right),
-            ),
-            BottomNavigationBarItem(
-              label: 'Profile',
-              icon: Icon(Icons.person),
-            ),
-            // BottomNavigationBarItem(
-            //   label: 'News',
-            //   icon: Icon(Icons.newspaper),
-            // )
-          ],
+      bottomNavigationBar: Container(
+        color: Colors.black,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 13),
+          child: GNav(
+            gap: 6,
+            backgroundColor: Colors.black,
+            activeColor: Colors.white,
+            color: Colors.white,
+            selectedIndex: currentIndex,
+            tabBackgroundColor: Colors.grey.shade800,
+            padding: EdgeInsets.all(9),
+            onTabChange: (index) => setState(() => currentIndex = index),
+            tabs: const [
+              GButton(
+                icon: Icons.home,
+                text: 'Home',
+              ),
+              GButton(
+                icon: Icons.search,
+                text: 'Search',
+              ),
+              GButton(
+                icon: Icons.post_add,
+                text: 'Post',
+              ),
+              GButton(
+                icon: Icons.person,
+                text: 'Account',
+              ),
+            ],
+          ),
         ),
       ),
     );
