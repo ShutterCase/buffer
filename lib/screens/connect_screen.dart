@@ -27,22 +27,15 @@ class _ConnectScreenState extends State<ConnectScreen> {
                   ),
                 ),
               ),
-              ConnectCards(
-                  title: "FaceBook",
-                  onTap: () {
-                    print('fb');
-                  }),
-              ConnectCards(
-                  title: "Instagram",
-                  onTap: () {
-                    print('Insta');
-                  }),
+              ConnectCards(title: "FaceBook", onTap: () {}),
+              ConnectCards(title: "Instagram", onTap: () {}),
+              ConnectCards(title: "LinkDin", onTap: () {}),
               ConnectCards(title: "Twitter", onTap: () {}),
-              ConnectCards(title: "Pinterest", onTap: () {}),
-              ConnectCards(title: "Reddit", onTap: () {}),
-              ConnectCards(title: "Reddit", onTap: () {}),
-              ConnectCards(title: "Reddit", onTap: () {}),
-              ConnectCards(title: "Reddit", onTap: () {}),
+              // ConnectCards(title: "Pinterest", onTap: () {}),
+              // ConnectCards(title: "Reddit", onTap: () {}),
+              // ConnectCards(title: "Reddit", onTap: () {}),
+              // ConnectCards(title: "Reddit", onTap: () {}),
+              // ConnectCards(title: "Reddit", onTap: () {}),
             ],
           ),
         ),

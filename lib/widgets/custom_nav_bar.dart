@@ -22,10 +22,10 @@ class CustomNavigationBar extends StatefulWidget {
 }
 
 class _CustomNavigationBarState extends State<CustomNavigationBar> {
-  int currentIndex = 0;
+  int currentIndex = 1;
   final screens = [
     const HomeScreen(),
-    const TestApp(),
+    const ConnectScreen(),
     const PostScreen(),
     const ProfileScreen(),
   ];
