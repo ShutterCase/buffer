@@ -64,6 +64,7 @@ class _PostScreenState extends State<PostScreen> {
         child: Container(
           padding: const EdgeInsets.only(top: 30, right: 10, left: 10),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
@@ -113,7 +114,7 @@ class _PostScreenState extends State<PostScreen> {
               ),
               const SizedBox(height: 15),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.35,
+                height: MediaQuery.of(context).size.height * 0.30,
                 width: double.maxFinite,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -121,19 +122,19 @@ class _PostScreenState extends State<PostScreen> {
                   children: [
                     const Text(
                       "Title",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                     ),
                     CustomTextField(textEditingController: titleController, textInputType: TextInputType.name, hintText: 'Title'),
                     const Text(
                       "Description",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
                     ),
                     CustomTextField(
                       textEditingController: descriptionController,
                       textInputAction: TextInputAction.done,
                       textInputType: TextInputType.name,
                       hintText: 'Add Your Bio',
-                      maxLines: 4,
+                      maxLines: 3,
                     ),
                   ],
                 ),
@@ -249,22 +250,49 @@ class _PostScreenState extends State<PostScreen> {
                   },
                   selectedColor: Colors.red,
                 ),
-              ])
+              ]),
+              const SizedBox(height: 10),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                height: 45,
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(primary: voiletColor),
+                  onPressed: () {
+                    setState(() {
+                      if (_isSelected1 || _isSelected2 || _isSelected3 || _isSelected4 || _isSelected5 == true) {
+                        log('Perform Task');
+                      } else {
+                        log("Something Missing");
+                      }
+                    });
+                  },
+                  child: const Center(
+                    child: Text(
+                      "Post",
+                      style: TextStyle(
+                        fontSize: 23,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.share),
-          onPressed: () {
-            setState(() {
-              if (_isSelected1 || _isSelected2 || _isSelected3 || _isSelected4 || _isSelected5 == true) {
-                log('Perform Task');
-              } else {
-                log("Something Missing");
-              }
-            });
-          }),
+      // floatingActionButton: FloatingActionButton(
+      //     child: const Icon(Icons.share),
+      //     onPressed: () {
+      //       setState(() {
+      //         if (_isSelected1 || _isSelected2 || _isSelected3 || _isSelected4 || _isSelected5 == true) {
+      //           log('Perform Task');
+      //         } else {
+      //           log("Something Missing");
+      //         }
+      //       });
+      //     }),
     );
   }
 
