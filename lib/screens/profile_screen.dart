@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 import 'package:buffer/helper/constants.dart';
+import 'package:buffer/helper/utils.dart';
 import 'package:buffer/widgets/create_profile.dart';
 import 'package:buffer/widgets/loading_indicator.dart';
 
@@ -11,6 +12,8 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
+
+import '../widgets/custom_text_field.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({Key? key}) : super(key: key);
@@ -27,6 +30,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   int age = 0;
   String detail = "";
   String pic = '';
+
+  String updateName = '';
+  String updateEmail = '';
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController ageController = TextEditingController();
 
   File? profilepic;
 
@@ -208,6 +217,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ListTileWidget(
                                   name: name,
                                   title: 'Name',
+                                  trailing: IconButton(
+                                    icon: Icon(Icons.edit),
+                                    onPressed: () {
+                                      _editWidget();
+                                    },
+                                  ),
                                 ),
                                 const Divider(
                                   height: 3,
@@ -279,6 +294,96 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
     );
   }
+
+  void _editWidget() {
+    showModalBottomSheet(
+      enableDrag: false,
+      isDismissible: false,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24),
+          topRight: Radius.circular(24),
+        ),
+      ),
+      context: context,
+      builder: (context) => SingleChildScrollView(
+        child: Container(
+          // height: MediaQuery.of(context).size.height * 0.4,
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
+          child: Column(
+            // mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Edit Your Details",
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: grey),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.2,
+                // padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    CustomTextField(
+                      maxLines: 1,
+                      textEditingController: nameController,
+                      textInputType: TextInputType.name,
+                      hintText: 'Name',
+                    ),
+                    CustomTextField(
+                      maxLines: 1,
+                      textEditingController: ageController,
+                      textInputType: TextInputType.number,
+                      hintText: 'Age',
+                      textInputAction: TextInputAction.done,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: 45,
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(primary: voiletColor),
+                  onPressed: () {
+                    update();
+                    Navigator.pop(context);
+                  },
+                  child: const Center(
+                    child: Text(
+                      "Confirm",
+                      style: TextStyle(
+                        fontSize: 23,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void update() async {
+    String name = nameController.text.trim();
+    String ageString = ageController.text.trim();
+
+    nameController.clear();
+    ageController.clear();
+
+    if (name != "" && ageString != "") {
+      await FirebaseDatabase.instance.ref("users").child(FirebaseAuth.instance.currentUser!.uid).update({
+        "name": name,
+        "age": int.parse(ageString),
+      });
+    } else {
+      Utils.showSnackBar('Fill the details');
+    }
+  }
 }
 
 class ListTileWidget extends StatelessWidget {
@@ -286,9 +391,11 @@ class ListTileWidget extends StatelessWidget {
     Key? key,
     required this.name,
     required this.title,
+    this.trailing,
   }) : super(key: key);
 
   final String name;
+  final Widget? trailing;
   final String title;
 
   @override
@@ -296,6 +403,7 @@ class ListTileWidget extends StatelessWidget {
     return SizedBox(
       height: MediaQuery.of(context).size.height * 0.10,
       child: ListTile(
+        contentPadding: const EdgeInsets.symmetric(horizontal: 5),
         title: Padding(
           padding: EdgeInsets.only(bottom: MediaQuery.of(context).size.height * 0.005),
           child: Text(
@@ -307,6 +415,7 @@ class ListTileWidget extends StatelessWidget {
           name,
           style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 16),
         ),
+        trailing: trailing,
         // contentPadding: EdgeInsets.symmetric(horizontal: 30, vertical: 0),
       ),
     );
