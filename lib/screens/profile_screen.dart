@@ -218,7 +218,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   name: name,
                                   title: 'Name',
                                   trailing: IconButton(
-                                    icon: Icon(Icons.edit),
+                                    icon: const Icon(Icons.edit),
                                     onPressed: () {
                                       _editWidget();
                                     },
@@ -297,8 +297,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _editWidget() {
     showModalBottomSheet(
-      enableDrag: false,
-      isDismissible: false,
+      // enableDrag: false,
+      // isDismissible: false,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(24),
@@ -306,18 +307,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       context: context,
-      builder: (context) => SingleChildScrollView(
+      builder: (context) => Padding(
+        padding: MediaQuery.of(context).viewInsets,
         child: Container(
           // height: MediaQuery.of(context).size.height * 0.4,
-          padding: const EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 20),
-          child: Column(
+          padding: const EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 30),
+          child: Wrap(
             // mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
+
             children: <Widget>[
-              Text(
-                "Edit Your Details",
-                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: grey),
+              const Align(
+                alignment: Alignment.center,
+                child: Text(
+                  "Edit Your Details",
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: whiteColor),
+                ),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.2,
