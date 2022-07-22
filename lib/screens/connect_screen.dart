@@ -18,7 +18,8 @@ class _ConnectScreenState extends State<ConnectScreen> {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              SizedBox(
+              Container(
+                decoration: BoxDecoration(border: Border.all(color: Colors.white, width: 2), borderRadius: BorderRadius.circular(10)),
                 height: MediaQuery.of(context).size.height * 0.15,
                 child: const Center(
                   child: Text(
