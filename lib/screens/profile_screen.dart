@@ -254,8 +254,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   void _bottomSheetWidget() {
     showModalBottomSheet(
-      enableDrag: false,
-      isDismissible: false,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(24),
@@ -263,33 +262,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       context: context,
-      builder: (context) => Padding(
-        padding: const EdgeInsets.only(top: 10),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              "Pick an Image",
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: grey),
-            ),
-            ListTile(
-              leading: const Icon(Icons.camera),
-              title: const Text('Camera'),
-              onTap: () {
-                getImage(ImageSource.camera);
-                Navigator.of(context).pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.browse_gallery),
-              title: const Text('Gallery'),
-              onTap: () {
-                getImage(ImageSource.gallery);
-                Navigator.of(context).pop(context);
-              },
-            ),
-          ],
+      builder: (context) => WillPopScope(
+        onWillPop: () async {
+          print('close sheet');
+          return true;
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Pick an Image",
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: grey),
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera),
+                title: const Text('Camera'),
+                onTap: () {
+                  getImage(ImageSource.camera);
+                  Navigator.of(context).pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.browse_gallery),
+                title: const Text('Gallery'),
+                onTap: () {
+                  getImage(ImageSource.gallery);
+                  Navigator.of(context).pop(context);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -307,65 +312,71 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
       ),
       context: context,
-      builder: (context) => Padding(
-        padding: MediaQuery.of(context).viewInsets,
-        child: Container(
-          // height: MediaQuery.of(context).size.height * 0.4,
-          padding: const EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 30),
-          child: Wrap(
-            // mainAxisSize: MainAxisSize.min,
+      builder: (context) => WillPopScope(
+        onWillPop: () async {
+          print('close sheet');
+          return true;
+        },
+        child: Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: Container(
+            // height: MediaQuery.of(context).size.height * 0.4,
+            padding: const EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 30),
+            child: Wrap(
+              // mainAxisSize: MainAxisSize.min,
 
-            children: <Widget>[
-              const Align(
-                alignment: Alignment.center,
-                child: Text(
-                  "Edit Your Details",
-                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: whiteColor),
+              children: <Widget>[
+                const Align(
+                  alignment: Alignment.center,
+                  child: Text(
+                    "Edit Your Details",
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: whiteColor),
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.height * 0.2,
-                // padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    CustomTextField(
-                      maxLines: 1,
-                      textEditingController: nameController,
-                      textInputType: TextInputType.name,
-                      hintText: 'Name',
-                    ),
-                    CustomTextField(
-                      maxLines: 1,
-                      textEditingController: ageController,
-                      textInputType: TextInputType.number,
-                      hintText: 'Age',
-                      textInputAction: TextInputAction.done,
-                    ),
-                  ],
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.2,
+                  // padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      CustomTextField(
+                        maxLines: 1,
+                        textEditingController: nameController,
+                        textInputType: TextInputType.name,
+                        hintText: 'Name',
+                      ),
+                      CustomTextField(
+                        maxLines: 1,
+                        textEditingController: ageController,
+                        textInputType: TextInputType.number,
+                        hintText: 'Age',
+                        textInputAction: TextInputAction.done,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 45,
-                width: double.infinity,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(primary: voiletColor),
-                  onPressed: () {
-                    update();
-                    Navigator.pop(context);
-                  },
-                  child: const Center(
-                    child: Text(
-                      "Confirm",
-                      style: TextStyle(
-                        fontSize: 23,
-                        color: Colors.white,
+                SizedBox(
+                  height: 45,
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(primary: voiletColor),
+                    onPressed: () {
+                      update();
+                      Navigator.pop(context);
+                    },
+                    child: const Center(
+                      child: Text(
+                        "Confirm",
+                        style: TextStyle(
+                          fontSize: 23,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

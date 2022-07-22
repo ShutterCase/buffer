@@ -298,8 +298,9 @@ class _PostScreenState extends State<PostScreen> {
 
   void _bottomSheetWidget() {
     showModalBottomSheet(
-      enableDrag: false,
-      isDismissible: false,
+      // enableDrag: false,
+      // isDismissible: false,
+      isScrollControlled: true,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(24),
@@ -307,33 +308,39 @@ class _PostScreenState extends State<PostScreen> {
         ),
       ),
       context: context,
-      builder: (context) => Padding(
-        padding: const EdgeInsets.only(top: 10),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              "Pick an Image",
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: grey),
-            ),
-            ListTile(
-              leading: const Icon(Icons.camera),
-              title: const Text('Camera'),
-              onTap: () {
-                getImage(ImageSource.camera);
-                Navigator.of(context).pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.browse_gallery),
-              title: const Text('Gallery'),
-              onTap: () {
-                getImage(ImageSource.gallery);
-                Navigator.of(context).pop(context);
-              },
-            ),
-          ],
+      builder: (context) => WillPopScope(
+        onWillPop: () async {
+          print('close sheet');
+          return true;
+        },
+        child: Padding(
+          padding: const EdgeInsets.only(top: 10),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Text(
+                "Pick an Image",
+                style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22, color: grey),
+              ),
+              ListTile(
+                leading: const Icon(Icons.camera),
+                title: const Text('Camera'),
+                onTap: () {
+                  getImage(ImageSource.camera);
+                  Navigator.of(context).pop(context);
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.browse_gallery),
+                title: const Text('Gallery'),
+                onTap: () {
+                  getImage(ImageSource.gallery);
+                  Navigator.of(context).pop(context);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
