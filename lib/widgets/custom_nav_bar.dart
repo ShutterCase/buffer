@@ -1,17 +1,8 @@
-import 'package:buffer/helper/constants.dart';
-import 'package:buffer/linkdin_login.dart';
-import 'package:buffer/reddit_login.dart';
-import 'package:buffer/screens/secondScreen.dart';
-import 'package:buffer/testing_api.dart';
 import 'package:flutter/material.dart';
-import '../fb_login.dart';
-import '../pinteret_login.dart';
-import '../screens/check_box_screen.dart';
 import '../screens/connect_screen.dart';
 import '../screens/home_screen.dart';
 import '../screens/post_screen.dart';
 import '../screens/profile_screen.dart';
-import '../twitter_login.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 class CustomNavigationBar extends StatefulWidget {

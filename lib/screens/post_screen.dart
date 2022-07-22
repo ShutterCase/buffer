@@ -187,7 +187,7 @@ class _PostScreenState extends State<PostScreen> {
                 FilterChip(
                   label: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 3),
-                    child: Text("Whatsapp"),
+                    child: Text("LinkDin"),
                   ),
                   labelStyle: const TextStyle(
                     color: Colors.white,
@@ -198,18 +198,18 @@ class _PostScreenState extends State<PostScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30.0),
                   ),
-                  backgroundColor: Colors.green.withOpacity(0.50),
+                  backgroundColor: Colors.lightBlueAccent.withOpacity(0.50),
                   onSelected: (isSelected) {
                     setState(() {
                       _isSelected3 = isSelected;
                     });
                   },
-                  selectedColor: Colors.green,
+                  selectedColor: Colors.lightBlueAccent,
                 ),
                 FilterChip(
                   label: const Padding(
                     padding: EdgeInsets.symmetric(horizontal: 3),
-                    child: Text("Reddit"),
+                    child: Text("Twitter"),
                   ),
                   labelStyle: const TextStyle(
                     color: Colors.white,
