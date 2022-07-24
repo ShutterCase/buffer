@@ -1,16 +1,19 @@
+import 'dart:developer';
+
+import 'package:buffer/fb_login.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:twitter_login/twitter_login.dart';
 
-class TwitterLoginTest extends StatefulWidget {
-  const TwitterLoginTest({Key? key}) : super(key: key);
+class Sid extends StatefulWidget {
+  const Sid({Key? key}) : super(key: key);
 
   @override
-  State<TwitterLoginTest> createState() => _TwitterLoginTestState();
+  State<Sid> createState() => _SidState();
 }
 
-class _TwitterLoginTestState extends State<TwitterLoginTest> {
+class _SidState extends State<Sid> {
   bool isLoading = false;
   @override
   Widget build(BuildContext context) {
@@ -19,36 +22,73 @@ class _TwitterLoginTestState extends State<TwitterLoginTest> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text("Twitter Login"),
+          const Text("Twitter Login"),
           ElevatedButton(
             onPressed: () async {
-              print("hello");
+              log("Start");
 
               try {
                 final twitterLogin = TwitterLogin(
                   apiKey: "K2dxjejPuEskmB4LuXSCaX5a2",
-                  apiSecretKey: "v035Z6gfARogTBqbi2hSsQkhAOR3iTVIUo89VBCz9MJbogyHyx",
-                  redirectURI: "https://buffer-52eee.firebaseapp.com/__/auth/handler",
+                  apiSecretKey:
+                      "v035Z6gfARogTBqbi2hSsQkhAOR3iTVIUo89VBCz9MJbogyHyx",
+                  redirectURI:
+                      "https://buffer-52eee.firebaseapp.com/__/auth/handler",
                 );
 
                 final authResult = await twitterLogin.login();
-                final AuthCredential credential = TwitterAuthProvider.credential(
-                  accessToken: authResult.authToken!,
-                  secret: authResult.authTokenSecret!,
-                );
+                switch (authResult.status) {
+                  case TwitterLoginStatus.loggedIn:
+                    log("success");
+                    await twitterLogin.login().then((value) async {
+                      final twitterAuthCredential =
+                          TwitterAuthProvider.credential(
+                        accessToken: value.authToken!,
+                        secret: value.authTokenSecret!,
+                      );
 
-                await FirebaseAuth.instance.signInWithCredential(credential);
+                      await FirebaseAuth.instance
+                          .signInWithCredential(twitterAuthCredential);
+                    });
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FacebookLogin()));
 
-                setState(() {
-                  isLoading = true;
-                });
+                    // final AuthCredential credential =
+                    //     TwitterAuthProvider.credential(
+                    //   accessToken: authResult.authToken!,
+                    //   secret: authResult.authTokenSecret!,
+                    // );
+                    //
+                    // await FirebaseAuth.instance
+                    //     .signInWithCredential(credential);
+                    //
+                    // setState(() {
+                    //   isLoading = true;
+                    //   log("true");
+                    // });
+                    // success
+                    break;
+                  case TwitterLoginStatus.cancelledByUser:
+
+                    // cancel
+                    log("cancel");
+                    break;
+                  case TwitterLoginStatus.error:
+                    // error
+                    log("error");
+                    break;
+                  default:
+                    break;
+                }
               } on PlatformException {
                 print('Issue in Platform');
               }
             },
-            child: Text("Log In"),
+            child: const Text("Log In"),
           ),
-          isLoading ? Text("success") : Text("failure")
+          // isLoading ? const Text("success") : const Text("failure")
         ],
       ),
     ));

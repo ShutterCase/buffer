@@ -5,6 +5,8 @@ import '../screens/post_screen.dart';
 import '../screens/profile_screen.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
+import '../twitter_login.dart';
+
 class CustomNavigationBar extends StatefulWidget {
   const CustomNavigationBar({Key? key}) : super(key: key);
 
@@ -18,7 +20,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     const HomeScreen(),
     const ConnectScreen(),
     const PostScreen(),
-    const ProfileScreen(),
+    const Sid(),
   ];
   @override
   Widget build(BuildContext context) {
