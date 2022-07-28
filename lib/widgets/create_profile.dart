@@ -27,7 +27,7 @@ class _CreateProfileState extends State<CreateProfile> {
   TextEditingController ageController = TextEditingController();
   TextEditingController detailController = TextEditingController();
 
-  void saveUser(File profilePic) async {
+  void saveUser() async {
     String name = nameController.text.trim();
     String email = emailController.text.trim();
     String ageString = ageController.text.trim();
@@ -41,18 +41,29 @@ class _CreateProfileState extends State<CreateProfile> {
     detailController.clear();
 
     if (name != "" && email != "" && detailString != "") {
-      UploadTask uploadTask = FirebaseStorage.instance.ref().child("profilepictures").child(Uuid().v1()).putFile(profilePic);
+      if (profilepic != null) {
+        UploadTask uploadTask = FirebaseStorage.instance.ref().child("profilepictures").child(Uuid().v1()).putFile(profilepic!);
 
-      TaskSnapshot taskSnapshot = await uploadTask;
-      String downloadUrl = await taskSnapshot.ref.getDownloadURL();
-      var myMap = Map();
-      myMap['name'] = name;
-      myMap['email'] = email;
-      myMap['age'] = age;
-      myMap['detailString'] = detailString;
-      myMap['image'] = downloadUrl;
+        TaskSnapshot taskSnapshot = await uploadTask;
+        String downloadUrl = await taskSnapshot.ref.getDownloadURL();
+        var myMap = Map();
+        myMap['name'] = name;
+        myMap['email'] = email;
+        myMap['age'] = age;
+        myMap['detailString'] = detailString;
+        myMap['image'] = downloadUrl;
 
-      FirebaseDatabase.instance.ref("users").child(FirebaseAuth.instance.currentUser!.uid).set(myMap);
+        FirebaseDatabase.instance.ref("users").child(FirebaseAuth.instance.currentUser!.uid).set(myMap);
+      } else {
+        var myMap = Map();
+        myMap['name'] = name;
+        myMap['email'] = email;
+        myMap['age'] = age;
+        myMap['detailString'] = detailString;
+        myMap['image'] = emptyImageString;
+
+        FirebaseDatabase.instance.ref("users").child(FirebaseAuth.instance.currentUser!.uid).set(myMap);
+      }
 
       log("User created!");
     } else {
@@ -68,9 +79,8 @@ class _CreateProfileState extends State<CreateProfile> {
     if (image != null) {
       final cropImage = await ImageCropper().cropImage(sourcePath: image.path, compressQuality: 50);
       if (cropImage != null) {
-        profilepic = File(cropImage.path);
         setState(() {
-          saveUser(profilepic!);
+          profilepic = File(cropImage.path);
           log("given to editPhoto");
         });
       }
@@ -190,7 +200,7 @@ class _CreateProfileState extends State<CreateProfile> {
               width: double.infinity,
               child: RaisedButton(
                 onPressed: () {
-                  saveUser(profilepic!);
+                  saveUser();
                 },
                 color: voiletColor,
                 child: const Center(

@@ -198,7 +198,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               radius: 70,
                               // backgroundImage: NetworkImage(emptyImageString),
 
-                              backgroundImage: NetworkImage(pic.isEmpty ? emptyImageString : pic),
+                              backgroundImage: NetworkImage(pic),
                             ),
                           ),
                           SizedBox(height: MediaQuery.of(context).size.height * 0.01),
