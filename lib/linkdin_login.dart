@@ -63,6 +63,7 @@ class _TestAppState extends State<TestApp> {
           ),
           LinkedInButtonStandardWidget(
             onTap: () {
+              if (!mounted) return;
               setState(() {
                 authorizationCode = null;
                 logoutUser = true;

@@ -20,7 +20,7 @@ class _CustomNavigationBarState extends State<CustomNavigationBar> {
     const HomeScreen(),
     const ConnectScreen(),
     const PostScreen(),
-    const Sid(),
+    const ProfileScreen(),
   ];
   @override
   Widget build(BuildContext context) {
