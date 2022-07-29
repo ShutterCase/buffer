@@ -9,7 +9,6 @@ import 'package:buffer/widgets/loading_indicator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
-
 import 'helper/utils.dart';
 import 'screens/intro_screen.dart';
 

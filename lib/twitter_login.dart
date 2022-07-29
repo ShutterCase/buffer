@@ -6,14 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:twitter_login/twitter_login.dart';
 
-class Sid extends StatefulWidget {
-  const Sid({Key? key}) : super(key: key);
+class TwitterTestLogin extends StatefulWidget {
+  const TwitterTestLogin({Key? key}) : super(key: key);
 
   @override
-  State<Sid> createState() => _SidState();
+  State<TwitterTestLogin> createState() => _TwitterTestLogin();
 }
 
-class _SidState extends State<Sid> {
+class _TwitterTestLogin extends State<TwitterTestLogin> {
   bool isLoading = false;
   @override
   Widget build(BuildContext context) {
@@ -30,10 +30,8 @@ class _SidState extends State<Sid> {
               try {
                 final twitterLogin = TwitterLogin(
                   apiKey: "K2dxjejPuEskmB4LuXSCaX5a2",
-                  apiSecretKey:
-                      "v035Z6gfARogTBqbi2hSsQkhAOR3iTVIUo89VBCz9MJbogyHyx",
-                  redirectURI:
-                      "https://buffer-52eee.firebaseapp.com/__/auth/handler",
+                  apiSecretKey: "v035Z6gfARogTBqbi2hSsQkhAOR3iTVIUo89VBCz9MJbogyHyx",
+                  redirectURI: "https://buffer-52eee.firebaseapp.com/__/auth/handler",
                 );
 
                 final authResult = await twitterLogin.login();
@@ -41,19 +39,16 @@ class _SidState extends State<Sid> {
                   case TwitterLoginStatus.loggedIn:
                     log("success");
                     await twitterLogin.login().then((value) async {
-                      final twitterAuthCredential =
-                          TwitterAuthProvider.credential(
+                      final twitterAuthCredential = TwitterAuthProvider.credential(
                         accessToken: value.authToken!,
                         secret: value.authTokenSecret!,
                       );
 
-                      await FirebaseAuth.instance
-                          .signInWithCredential(twitterAuthCredential);
+                      await FirebaseAuth.instance.signInWithCredential(twitterAuthCredential);
+                      setState(() {
+                        isLoading = false;
+                      });
                     });
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => FacebookLogin()));
 
                     // final AuthCredential credential =
                     //     TwitterAuthProvider.credential(
@@ -88,7 +83,7 @@ class _SidState extends State<Sid> {
             },
             child: const Text("Log In"),
           ),
-          // isLoading ? const Text("success") : const Text("failure")
+          isLoading ? const Text("success") : const Text("failure")
         ],
       ),
     ));

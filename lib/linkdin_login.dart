@@ -6,14 +6,14 @@ const String redirectUrl = 'https://brandandbeyondit.com/';
 const String clientId = '860kx19cc72jr7';
 const String clientSecret = 'GyVwn74vy4C5iG51';
 
-class TestApp extends StatefulWidget {
-  const TestApp({Key? key}) : super(key: key);
+class LinkdinLoginTest extends StatefulWidget {
+  const LinkdinLoginTest({Key? key}) : super(key: key);
 
   @override
-  State<TestApp> createState() => _TestAppState();
+  State<LinkdinLoginTest> createState() => _LinkdinLoginTestState();
 }
 
-class _TestAppState extends State<TestApp> {
+class _LinkdinLoginTestState extends State<LinkdinLoginTest> {
   AuthCodeObject? authorizationCode;
   bool logoutUser = false;
 
